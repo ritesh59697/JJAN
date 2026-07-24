@@ -43,9 +43,20 @@ a:hover { border-bottom-color: var(--text); }
 /* ---- Top bar ---- */
 .topbar {
   display: flex; align-items: center; justify-content: space-between;
+  gap: 12px 20px; flex-wrap: wrap;
   padding: 14px 0; margin-bottom: 4px;
 }
-.brand { display: flex; align-items: baseline; gap: 10px; }
+.brand { display: flex; align-items: baseline; gap: 10px; cursor: pointer; border-radius: 8px; }
+.brand:focus-visible { outline: 2px solid var(--text); outline-offset: 4px; }
+
+.topnav { display: flex; align-items: center; gap: 2px; }
+.navlink {
+  background: transparent; border: 0; box-shadow: none;
+  color: var(--muted); font-size: 13.5px; font-weight: 500;
+  padding: 7px 13px; border-radius: 999px;
+}
+.navlink:hover { color: var(--text); background: var(--field); box-shadow: none; }
+.navlink.active { color: var(--text); background: var(--field); }
 .brand h1 { font-size: 24px; margin: 0; font-weight: 800; letter-spacing: -0.03em; }
 .brand .ko { color: var(--muted); font-size: 14px; }
 .tag { color: var(--muted); font-size: 13.5px; line-height: 1.5; margin: 2px 0 0; max-width: 640px; }
