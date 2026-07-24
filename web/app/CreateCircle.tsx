@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useWriteContract, useWaitForTransactionReceipt } from "wagmi";
-import { parseUnits, isAddress, type Address } from "viem";
+import { parseUnits, isAddress, getAddress, type Address } from "viem";
 import { abis, addresses } from "@/lib/contracts";
 
 export function CreateCircle({ onCreated }: { onCreated: () => void }) {
@@ -12,13 +12,20 @@ export function CreateCircle({ onCreated }: { onCreated: () => void }) {
   const [minutes, setMinutes] = useState("5");
   const [error, setError] = useState<string | null>(null);
 
-  const { writeContract, data: hash, isPending } = useWriteContract();
+  const { writeContract, data: hash, isPending, error: writeError } = useWriteContract();
   const { isLoading: mining, isSuccess } = useWaitForTransactionReceipt({ hash });
 
-  if (isSuccess) {
-    // let the parent refresh the list once, then reset
-    setTimeout(onCreated, 0);
-  }
+  useEffect(() => {
+    if (writeError) {
+      const e = writeError as any;
+      setError(e?.shortMessage ?? e?.message ?? "Transaction failed.");
+    }
+  }, [writeError]);
+
+  useEffect(() => {
+    // let the parent refresh the list once the tx confirms
+    if (isSuccess) onCreated();
+  }, [isSuccess, onCreated]);
 
   function submit() {
     setError(null);
@@ -27,7 +34,10 @@ export function CreateCircle({ onCreated }: { onCreated: () => void }) {
       .map((s) => s.trim())
       .filter(Boolean);
     if (order.length < 2) return setError("Add at least 2 member addresses.");
-    if (!order.every((a) => isAddress(a))) return setError("One of the addresses is invalid.");
+    // Accept any-case addresses (don't require a checksum), then normalize.
+    const invalid = order.find((a) => !isAddress(a, { strict: false }));
+    if (invalid) return setError(`Not a valid wallet address: ${invalid}`);
+    const normalized = order.map((a) => getAddress(a)) as Address[];
 
     try {
       writeContract({
@@ -39,7 +49,7 @@ export function CreateCircle({ onCreated }: { onCreated: () => void }) {
           parseUnits(amount || "0", 18),
           BigInt(Number(minutes) * 60),
           parseUnits(bond || "0", 18),
-          order as Address[],
+          normalized,
         ],
       });
     } catch (e: any) {

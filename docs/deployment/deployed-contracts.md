@@ -7,7 +7,7 @@ Click any address to read the verified source on the explorer.
 
 | Contract | Address |
 | --- | --- |
-| **CircleFactory** | [`0x7f01effDbEe10d31f300E2b3Fed000C061940551`](https://sepolia-explorer.giwa.io/address/0x7f01effDbEe10d31f300E2b3Fed000C061940551) |
+| **CircleFactory** | [`0x7f01efFDbEe10d31f300E2b3Fed000C061940551`](https://sepolia-explorer.giwa.io/address/0x7f01efFDbEe10d31f300E2b3Fed000C061940551) |
 | **ReputationRegistry** | [`0x0cd53f090471d4aD3f14bEFaC1F60D7F3F076204`](https://sepolia-explorer.giwa.io/address/0x0cd53f090471d4aD3f14bEFaC1F60D7F3F076204) |
 | **MockKRW (mKRW)** | [`0x6F82D1b448C3e742e2Da3455611c268C6D72f53B`](https://sepolia-explorer.giwa.io/address/0x6F82D1b448C3e742e2Da3455611c268C6D72f53B) |
 | **Circle (implementation)** | [`0xf2b12af647ecf2341960e901e4ee8ba55639377b`](https://sepolia-explorer.giwa.io/address/0xf2b12af647ecf2341960e901e4ee8ba55639377b) |
@@ -25,7 +25,7 @@ Anyone can query the live contracts, for example with [Foundry's](https://getfou
 
 ```bash
 # how many circles exist
-cast call 0x7f01effDbEe10d31f300E2b3Fed000C061940551 \
+cast call 0x7f01efFDbEe10d31f300E2b3Fed000C061940551 \
   "circleCount()(uint256)" --rpc-url https://sepolia-rpc.giwa.io/
 
 # the stablecoin symbol

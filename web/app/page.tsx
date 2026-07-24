@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { useAccount, useReadContract } from "wagmi";
+import { useAccount, useReadContract, useChainId, useSwitchChain } from "wagmi";
 import type { Address } from "viem";
 import { abis, addresses } from "@/lib/contracts";
+import { giwaTestnet } from "@/lib/chain";
 import { Connect } from "./Connect";
+import { Faucet } from "./Faucet";
 import { CreateCircle } from "./CreateCircle";
 import { CircleDetail } from "./CircleDetail";
 
@@ -16,6 +18,9 @@ function short(a: string) {
 
 export default function Home() {
   const { isConnected } = useAccount();
+  const chainId = useChainId();
+  const { switchChain, isPending: switching } = useSwitchChain();
+  const wrongChain = isConnected && chainId !== giwaTestnet.id;
   const [selected, setSelected] = useState<Address | null>(null);
 
   const { data: circles, refetch } = useReadContract({
@@ -55,7 +60,20 @@ export default function Home() {
           <p className="sub">Connect a wallet on the GIWA testnet to create or join a circle.</p>
         </div>
       ) : (
+        wrongChain ? (
+        <div className="card">
+          <h2>Switch to GIWA Sepolia</h2>
+          <p className="sub">
+            Your wallet is on the wrong network. Jjan runs on GIWA Sepolia (chain {giwaTestnet.id}). Switch
+            networks to create or join a circle.
+          </p>
+          <button className="gold" onClick={() => switchChain({ chainId: giwaTestnet.id })} disabled={switching}>
+            {switching ? "Switching…" : "Switch to GIWA Sepolia"}
+          </button>
+        </div>
+        ) : (
         <>
+          <Faucet />
           {selected ? (
             <>
               <button className="ghost" onClick={() => setSelected(null)}>← All circles</button>
@@ -78,6 +96,7 @@ export default function Home() {
             </>
           )}
         </>
+        )
       )}
     </div>
   );

@@ -99,7 +99,7 @@ or the `require(factory == predictedFactory)` assertion will fire.
 
 | Contract | Address |
 |---|---|
-| CircleFactory | `0x7f01effDbEe10d31f300E2b3Fed000C061940551` |
+| CircleFactory | `0x7f01efFDbEe10d31f300E2b3Fed000C061940551` |
 | ReputationRegistry | `0x0cd53f090471d4aD3f14bEFaC1F60D7F3F076204` |
 | MockKRW (mKRW) | `0x6F82D1b448C3e742e2Da3455611c268C6D72f53B` |
 | Circle (implementation) | `0xf2b12af647ecf2341960e901e4ee8ba55639377b` |

@@ -9,3 +9,4 @@ node_modules/
 web/.next/
 web/node_modules/
 submission/node_modules/
+web/tsconfig.tsbuildinfo
