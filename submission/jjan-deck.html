@@ -1,0 +1,487 @@
+<meta charset="utf-8">
+<title>Jjan — Pitch Deck</title>
+
+<style>
+  :root {
+    --bg: #0B0B10;
+    --panel: #1B1B27;
+    --panel2: #252536;
+    --line: #33334A;
+    --coral: #FF5470;
+    --gold: #FFB400;
+    --green: #35D07F;
+    --text: #ECECF5;
+    --muted: #9DA0B5;
+    --sans: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .deck {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background:
+      radial-gradient(1100px 620px at 78% -12%, #241326 0%, transparent 60%),
+      radial-gradient(900px 600px at 8% 118%, #1a0f1d 0%, transparent 55%),
+      var(--bg);
+  }
+
+  /* 16:9 stage that scales to the viewport; all type sized in cqw so it scales with it */
+  .stage {
+    position: relative;
+    width: min(100vw, 177.78vh);
+    height: min(56.25vw, 100vh);
+    container-type: size;
+    overflow: hidden;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    padding: 6cqh 6cqw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(1.4cqh);
+    transition: opacity .45s ease, transform .45s ease, visibility 0s .45s;
+  }
+  .slide.active {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition: opacity .5s ease, transform .5s ease;
+  }
+  .slide.active .stagger > * { animation: rise .5s both; }
+  .slide.active .stagger > *:nth-child(2) { animation-delay: .06s; }
+  .slide.active .stagger > *:nth-child(3) { animation-delay: .12s; }
+  .slide.active .stagger > *:nth-child(4) { animation-delay: .18s; }
+  @keyframes rise { from { opacity: 0; transform: translateY(1.8cqh); } to { opacity: 1; transform: none; } }
+
+  .eyebrow {
+    font-size: 1.15cqw;
+    font-weight: 700;
+    letter-spacing: .32em;
+    text-transform: uppercase;
+    color: var(--coral);
+    margin: 0 0 2.4cqh;
+  }
+  .eyebrow.gold { color: var(--gold); }
+  .eyebrow.green { color: var(--green); }
+
+  h1 { font-size: 8.2cqw; line-height: .98; margin: 0; font-weight: 800; letter-spacing: -.02em; }
+  h2 { font-size: 3.9cqw; line-height: 1.04; margin: 0; font-weight: 800; letter-spacing: -.015em; text-wrap: balance; max-width: 20ch; }
+  .lead { font-size: 1.9cqw; line-height: 1.4; color: var(--text); margin: 2.6cqh 0 0; max-width: 42ch; }
+  .muted { color: var(--muted); }
+  .coral { color: var(--coral); }
+  .gold { color: var(--gold); }
+  .green { color: var(--green); }
+
+  /* Title slide */
+  .title-brand { font-size: 12cqw; font-weight: 800; letter-spacing: -.03em; line-height: 1; margin: 1.4cqh 0 0; }
+  .title-sub { font-size: 2.4cqw; margin: 3cqh 0 0; max-width: 40ch; line-height: 1.35; }
+  .title-note { font-size: 1.5cqw; color: var(--muted); margin: 1.6cqh 0 0; max-width: 46ch; }
+  .title-foot { position: absolute; left: 6cqw; bottom: 6cqh; font-size: 1.35cqw; }
+
+  .rings { position: absolute; right: 7cqw; top: 50%; transform: translateY(-50%); width: 34cqh; height: 34cqh; }
+  .rings i {
+    position: absolute; inset: 0; margin: auto; border-radius: 50%;
+    border: .18cqh solid var(--line);
+  }
+  .rings i.r2 { width: 74%; height: 74%; border-color: #3A2036; }
+  .rings i.r3 { width: 48%; height: 48%; border: .5cqh solid var(--coral); }
+  .rings .orbit { position: absolute; inset: 0; animation: spin 18s linear infinite; }
+  .rings .orbit b { position: absolute; width: 2.2cqh; height: 2.2cqh; border-radius: 50%; left: 50%; margin-left: -1.1cqh; }
+  .rings .orbit b.d1 { top: -1.1cqh; background: var(--gold); }
+  .rings .orbit b.d2 { bottom: 8%; left: 82%; background: var(--coral); }
+  .rings .orbit b.d3 { bottom: 8%; left: 18%; background: #fff; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* generic grids / cards */
+  .card {
+    background: linear-gradient(180deg, var(--panel), var(--panel2));
+    border: 1px solid var(--line);
+    border-radius: 1.4cqh;
+    padding: 3cqh 2.4cqw;
+  }
+  .row { display: flex; gap: 2cqw; }
+  .col { display: flex; flex-direction: column; }
+  .grow { flex: 1; }
+
+  .head-block { margin-bottom: 4.2cqh; }
+
+  /* problem list */
+  .plist { display: flex; flex-direction: column; gap: 1.6cqh; }
+  .pitem { display: flex; gap: 1.4cqw; align-items: flex-start; }
+  .pitem .bd { width: 1.1cqh; height: 1.1cqh; border-radius: 50%; background: var(--coral); margin-top: .7cqh; flex: none; }
+  .pitem h4 { margin: 0; font-size: 1.7cqw; font-weight: 700; }
+  .pitem p { margin: .3cqh 0 0; font-size: 1.35cqw; color: var(--muted); }
+
+  /* two-column compare */
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 2cqw; }
+  .compare .card h3 { margin: 0 0 2.2cqh; font-size: 2.3cqw; }
+  .clist { display: flex; flex-direction: column; gap: 1.7cqh; }
+  .cline { display: flex; gap: 1.1cqw; align-items: center; font-size: 1.7cqw; }
+  .cline .d { width: .95cqh; height: .95cqh; border-radius: 50%; flex: none; }
+
+  /* steps */
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.6cqw; }
+  .step .num {
+    width: 4.4cqh; height: 4.4cqh; border-radius: 50%; display: grid; place-items: center;
+    font-weight: 800; font-size: 2.1cqw; color: var(--bg); background: var(--coral); margin-bottom: 2.2cqh;
+  }
+  .step:last-child .num { background: var(--gold); }
+  .step h4 { margin: 0 0 1cqh; font-size: 2.1cqw; font-weight: 700; }
+  .step p { margin: 0; font-size: 1.3cqw; color: var(--muted); line-height: 1.32; }
+  .kicker-line { font-size: 1.7cqw; font-style: italic; color: var(--gold); margin: 4cqh 0 0; }
+
+  /* proof */
+  .proof { display: grid; grid-template-columns: 1.05fr 1.15fr; gap: 2cqw; }
+  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4cqw; }
+  .stat .n { font-size: 5cqw; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+  .stat .l { font-size: 1.15cqw; color: var(--muted); margin-top: 1cqh; line-height: 1.25; }
+  .guarantee h4 { margin: 0 0 1.6cqh; font-size: 1.9cqw; }
+  .guarantee p { margin: 0; font-size: 1.35cqw; color: var(--muted); line-height: 1.4; }
+  .addr { margin-top: 2.4cqh; }
+  .addr .lbl { font-size: 1cqw; letter-spacing: .18em; font-weight: 700; color: var(--green); }
+  .addr table { margin-top: 1.2cqh; border-collapse: collapse; font-family: var(--mono); font-size: 1.25cqw; }
+  .addr td { padding: .5cqh 0; }
+  .addr td:first-child { font-weight: 700; padding-right: 1.4cqw; }
+  .addr td:last-child { color: var(--muted); }
+
+  /* 3-card grid */
+  .three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.8cqw; }
+  .three .tab { width: 3.4cqw; height: .7cqh; border-radius: 1cqh; margin-bottom: 2.4cqh; }
+  .three h4 { margin: 0 0 1.6cqh; font-size: 2.1cqw; font-weight: 700; line-height: 1.05; }
+  .three p { margin: 0; font-size: 1.35cqw; color: var(--muted); line-height: 1.42; }
+
+  /* retention split */
+  .split { display: grid; grid-template-columns: 1fr 1.02fr; gap: 2cqw; align-items: stretch; }
+  .bigcard h3 { margin: 0 0 2cqh; font-size: 2.5cqw; line-height: 1.1; }
+  .bigcard p { margin: 0; font-size: 1.65cqw; color: var(--muted); line-height: 1.42; }
+  .metrics { display: flex; flex-direction: column; gap: 1.3cqh; }
+  .metric { display: flex; align-items: center; gap: 1.6cqw; padding: 1.6cqh 1.6cqw; }
+  .metric .m { font-size: 2.1cqw; font-weight: 800; flex: none; min-width: 9cqw; }
+  .metric .t { font-size: 1.35cqw; color: var(--muted); }
+
+  /* market */
+  .market { display: grid; grid-template-columns: 1fr 1fr; gap: 2cqw; }
+  .core-ring { display: grid; place-items: center; gap: 1.4cqh; padding: 3cqh 0; }
+  .core-ring .core {
+    width: 22cqh; height: 22cqh; border-radius: 2cqh; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: .8cqh; text-align: center; padding: 1cqh;
+    background: var(--panel2); border: 1px solid var(--line);
+  }
+  .core-ring .core b { font-size: 2.7cqw; font-weight: 800; color: var(--coral); line-height: 1.05; word-break: keep-all; }
+  .core-ring .core span { font-size: 1.2cqw; color: var(--muted); }
+  .extend { text-align: center; font-size: 1.4cqw; color: var(--muted); max-width: 34ch; line-height: 1.4; }
+  .gtm { display: flex; flex-direction: column; gap: 1.4cqh; }
+  .gitem { padding: 1.8cqh 1.6cqw; }
+  .gitem h4 { margin: 0 0 .6cqh; font-size: 1.6cqw; font-weight: 700; display: flex; align-items: center; gap: 1cqw; }
+  .gitem h4::before { content: ""; width: 1cqh; height: 1cqh; border-radius: 50%; background: var(--gold); }
+  .gitem p { margin: 0 0 0 2cqw; font-size: 1.25cqw; color: var(--muted); }
+
+  /* roadmap */
+  .road { position: relative; margin-top: 3cqh; }
+  .road .track { position: absolute; left: 2%; right: 2%; top: 50%; height: 2px; background: var(--line); }
+  .phases { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.6cqw; }
+  .phase { position: relative; display: grid; place-items: center; min-height: 30cqh; }
+  .phase .node { width: 2cqh; height: 2cqh; border-radius: 50%; border: .5cqh solid var(--bg); position: absolute; top: 50%; transform: translateY(-50%); z-index: 2; }
+  .phase .pc { width: 100%; }
+  .phase:nth-child(odd) .pc { align-self: start; }
+  .phase:nth-child(even) .pc { align-self: end; }
+  .phase h4 { margin: 0 0 .8cqh; font-size: 2cqw; font-weight: 800; }
+  .phase p { margin: 0; font-size: 1.25cqw; color: var(--muted); line-height: 1.32; }
+
+  /* ask */
+  .ask { display: grid; grid-template-columns: 1.35fr 1fr; gap: 2.4cqw; align-items: start; }
+  .ask h2 { font-size: 4.4cqw; }
+  .asklist { display: flex; flex-direction: column; gap: 1.3cqh; margin-top: 3cqh; }
+  .aitem { padding: 1.7cqh 1.6cqw; }
+  .aitem h4 { margin: 0 0 .5cqh; font-size: 1.65cqw; font-weight: 700; display: flex; gap: 1cqw; align-items: center; }
+  .aitem h4::before { content: ""; width: 1.05cqh; height: 1.05cqh; border-radius: 50%; background: var(--coral); flex: none; }
+  .aitem p { margin: 0 0 0 2.05cqw; font-size: 1.3cqw; color: var(--muted); }
+  .team { align-self: stretch; }
+  .team .lbl { font-size: 1.1cqw; letter-spacing: .2em; font-weight: 700; color: var(--gold); }
+  .team .name { font-size: 3.4cqw; font-weight: 800; margin: 1.4cqh 0 1cqh; }
+  .team p { margin: 0; font-size: 1.35cqw; color: var(--muted); line-height: 1.4; }
+  .team .handle { color: var(--text); font-weight: 700; margin-top: 1.6cqh; font-size: 1.5cqw; }
+  .ask-foot { position: absolute; left: 6cqw; bottom: 5cqh; font-size: 1.35cqw; color: var(--green); font-weight: 600; }
+
+  /* chrome: nav */
+  .chrome { position: fixed; left: 0; right: 0; bottom: 2.4vh; display: flex; justify-content: center; align-items: center; gap: 18px; z-index: 20; }
+  .dots { display: flex; gap: 9px; }
+  .dots button { width: 9px; height: 9px; border-radius: 50%; border: 0; background: #3a3a52; cursor: pointer; padding: 0; transition: background .2s, transform .2s; }
+  .dots button.on { background: var(--coral); transform: scale(1.25); }
+  .counter { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; letter-spacing: .05em; min-width: 44px; text-align: center; }
+  .arrow { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line); background: rgba(255,255,255,.03); color: var(--text); cursor: pointer; font-size: 15px; display: grid; place-items: center; }
+  .arrow:hover { border-color: var(--coral); }
+  .hint { position: fixed; top: 2.2vh; right: 2.4vw; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: #55556e; z-index: 20; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .slide, .slide.active, .slide.active .stagger > *, .rings .orbit { transition: none !important; animation: none !important; }
+  }
+  :focus-visible { outline: 2px solid var(--coral); outline-offset: 3px; }
+</style>
+
+<div class="deck">
+  <div class="stage" id="stage">
+
+    <!-- 1 — Title -->
+    <section class="slide active">
+      <div class="rings" aria-hidden="true">
+        <i class="r1"></i><i class="r2"></i><i class="r3"></i>
+        <div class="orbit"><b class="d1"></b><b class="d2"></b><b class="d3"></b></div>
+      </div>
+      <div class="stagger">
+        <p class="eyebrow gold">GIWA × Upbit · GASOK MVP Build Phase</p>
+        <div class="title-brand"><span class="coral">Jjan</span> 짠</div>
+        <p class="title-sub">Trustless <b>곗돈</b> — save with friends, on-chain.</p>
+        <p class="title-note">The smart contract holds the pot, so no organizer can ever run off with it.</p>
+      </div>
+      <div class="title-foot"><span class="green" style="font-weight:700">Live &amp; verified on GIWA Sepolia</span><span class="muted"> · Ritesh · @Ritesh5969</span></div>
+    </section>
+
+    <!-- 2 — Problem -->
+    <section class="slide">
+      <div class="head-block stagger">
+        <p class="eyebrow">The problem</p>
+        <h2>Korea already saves this way — on trust alone</h2>
+      </div>
+      <div class="row">
+        <p class="lead grow" style="margin-top:0">The <b>kye</b> (곗돈) is a rotating savings club: friends put in a fixed amount each round, and the whole pot rotates to one member at a time. It's a centuries-old habit — and it runs on nothing but a group chat and a promise.</p>
+        <div class="plist grow">
+          <div class="pitem"><span class="bd"></span><div><h4>The organizer holds everyone's money</h4><p>One dishonest host and the entire pot is gone.</p></div></div>
+          <div class="pitem"><span class="bd"></span><div><h4>No record, no recourse</h4><p>Disputes come down to whose word you believe.</p></div></div>
+          <div class="pitem"><span class="bd"></span><div><h4>Missed payments break the circle</h4><p>Nothing enforces that everyone keeps paying in.</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 — Insight -->
+    <section class="slide">
+      <div class="head-block stagger">
+        <p class="eyebrow gold">The insight</p>
+        <h2>The trust is the bug. The contract is the fix.</h2>
+      </div>
+      <div class="compare">
+        <div class="card">
+          <h3 class="muted">Traditional kye</h3>
+          <div class="clist">
+            <div class="cline"><span class="d" style="background:var(--coral)"></span>Organizer custodies the pot</div>
+            <div class="cline"><span class="d" style="background:var(--coral)"></span>Rug pull is one decision away</div>
+            <div class="cline"><span class="d" style="background:var(--coral)"></span>No shared source of truth</div>
+            <div class="cline"><span class="d" style="background:var(--coral)"></span>Reputation lives in memory</div>
+          </div>
+        </div>
+        <div class="card" style="background:linear-gradient(180deg,#20202f,#2a2a3d)">
+          <h3><span class="coral">Jjan</span> 짠</h3>
+          <div class="clist">
+            <div class="cline"><span class="d" style="background:var(--green)"></span><b>Contract escrows every won</b></div>
+            <div class="cline"><span class="d" style="background:var(--green)"></span><b>No admin key, no drain path</b></div>
+            <div class="cline"><span class="d" style="background:var(--green)"></span><b>Every round is on-chain &amp; public</b></div>
+            <div class="cline"><span class="d" style="background:var(--green)"></span><b>Reputation follows your wallet</b></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 — How it works -->
+    <section class="slide">
+      <div class="head-block stagger">
+        <p class="eyebrow">How it works</p>
+        <h2>Four taps from group chat to trustless savings</h2>
+      </div>
+      <div class="steps">
+        <div class="step"><div class="num">1</div><h4>Create</h4><p>Set members, amount per round, and the payout order. One transaction spins up a circle.</p></div>
+        <div class="step"><div class="num">2</div><h4>Join</h4><p>Members open a share link and join in two taps. Social login — no seed phrase needed.</p></div>
+        <div class="step"><div class="num">3</div><h4>Contribute</h4><p>Each round, everyone pays the fixed amount into escrow. Miss it and your bond is slashed.</p></div>
+        <div class="step"><div class="num">4</div><h4>Rotate</h4><p>The contract pays the round's recipient automatically — in about a second on GIWA.</p></div>
+      </div>
+      <p class="kicker-line">Web2-easy on the surface. On-chain-trustless underneath.</p>
+    </section>
+
+    <!-- 5 — Proof -->
+    <section class="slide">
+      <div class="head-block stagger">
+        <p class="eyebrow green">Proof</p>
+        <h2>Not a mockup. Live &amp; verified on GIWA today.</h2>
+      </div>
+      <div class="proof">
+        <div class="stats">
+          <div class="card stat"><div class="n coral">4</div><div class="l">contracts deployed &amp; source-verified</div></div>
+          <div class="card stat"><div class="n green">9/9</div><div class="l">tests green — unit, fuzz &amp; invariant</div></div>
+          <div class="card stat"><div class="n gold">128k</div><div class="l">invariant calls, zero reverts</div></div>
+          <div class="card stat"><div class="n">~$0</div><div class="l">to deploy — GIWA gas ≈ 0.001 gwei</div></div>
+        </div>
+        <div class="card guarantee">
+          <h4>The guarantee, enforced in code</h4>
+          <p>Funds leave a circle only to the round's fixed recipient, or back to a member as their bond. There is no admin function that can move the pot anywhere else — proven by a solvency invariant that held across 128,000 random call sequences.</p>
+          <div class="addr">
+            <div class="lbl">VERIFIED ON GIWA SEPOLIA</div>
+            <table>
+              <tr><td>CircleFactory</td><td>0x7f01…0551</td></tr>
+              <tr><td>MockKRW</td><td>0x6F82…f53B</td></tr>
+              <tr><td>Reputation</td><td>0x0cd5…6204</td></tr>
+            </table>
+            <p class="gold" style="font-style:italic;margin-top:1.6cqh;font-size:1.25cqw">sepolia-explorer.giwa.io</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6 — Why GIWA -->
+    <section class="slide">
+      <div class="head-block stagger">
+        <p class="eyebrow gold">Why GIWA + Upbit</p>
+        <h2>A many-small-payments product needs a fast, cheap chain</h2>
+      </div>
+      <div class="three">
+        <div class="card"><div class="tab" style="background:var(--coral)"></div><h4>Payout feels instant</h4><p>~1s blocks, ~200ms Flashblocks preconfirmations. The pot lands the moment a round closes — the magic moment of the demo.</p></div>
+        <div class="card"><div class="tab" style="background:var(--gold)"></div><h4>Micro-payments make sense</h4><p>Near-zero gas means dozens of tiny recurring transfers per circle don't get eaten by fees — impossible on L1.</p></div>
+        <div class="card"><div class="tab" style="background:var(--green)"></div><h4>Upbit-scale distribution</h4><p>Millions of Korea-native users, a familiar wallet, and a direct funding path into circles from an Upbit balance.</p></div>
+      </div>
+    </section>
+
+    <!-- 7 — Retention -->
+    <section class="slide">
+      <div class="head-block stagger">
+        <p class="eyebrow">Why it grows</p>
+        <h2>Retention is built into the product</h2>
+      </div>
+      <div class="split">
+        <div class="card bigcard col" style="justify-content:center">
+          <h3>Every circle is a multi-round commitment</h3>
+          <p>A member who joins a 10-person circle has a reason to come back for ten rounds — retention isn't a growth hack we bolt on, it's the shape of the product. And one organizer onboards the whole group from a single link.</p>
+        </div>
+        <div class="metrics">
+          <div class="card metric"><span class="m coral">5–12</span><span class="t">wallets onboarded per circle created</span></div>
+          <div class="card metric"><span class="m gold">N rounds</span><span class="t">structural repeat engagement per member</span></div>
+          <div class="card metric"><span class="m green">₩ escrowed</span><span class="t">clean, honest on-chain traction metric</span></div>
+          <div class="card metric"><span class="m">Completion %</span><span class="t">circles finishing all rounds = trust earned</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8 — Market & GTM -->
+    <section class="slide">
+      <div class="head-block stagger">
+        <p class="eyebrow gold">Market &amp; go-to-market</p>
+        <h2>Start with kye. The primitive goes much further.</h2>
+      </div>
+      <div class="market">
+        <div class="card">
+          <div class="core-ring">
+            <div class="core"><b>kye / 곗돈</b><span>today</span></div>
+            <p class="extend">→ the same escrow-and-rotate contracts extend to <b class="muted">group buying</b>, <b class="muted">community insurance</b>, and <b class="muted">club treasuries</b>.</p>
+          </div>
+        </div>
+        <div class="col">
+          <p class="eyebrow gold" style="margin-bottom:2cqh">Go-to-market</p>
+          <div class="gtm">
+            <div class="card gitem"><h4>Seed real friend groups</h4><p>Land whole circles at once — the group is the unit of adoption.</p></div>
+            <div class="card gitem"><h4>Korean personal-finance KOLs</h4><p>“kye without the fraud” is a story creators can tell in one line.</p></div>
+            <div class="card gitem"><h4>University &amp; workplace clubs</h4><p>Dense, high-trust networks where circles already exist offline.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9 — Roadmap -->
+    <section class="slide">
+      <div class="head-block stagger">
+        <p class="eyebrow">Roadmap</p>
+        <h2>From a verified MVP to a group-finance platform</h2>
+      </div>
+      <div class="road">
+        <div class="track"></div>
+        <div class="phases">
+          <div class="phase"><span class="node" style="background:var(--coral)"></span><div class="pc"><h4 class="coral">Now</h4><p>Trustless rotating savings, live &amp; verified on GIWA testnet.</p></div></div>
+          <div class="phase"><span class="node" style="background:var(--gold)"></span><div class="pc"><h4 class="gold">Next</h4><p>Social-login onboarding · missed-round insurance pool · a real KRW stablecoin.</p></div></div>
+          <div class="phase"><span class="node" style="background:var(--green)"></span><div class="pc"><h4 class="green">Then</h4><p>Yield on idle escrow · VRF payout ordering · credit scoring from on-chain reputation.</p></div></div>
+          <div class="phase"><span class="node" style="background:#fff"></span><div class="pc"><h4>Scale</h4><p>Group buying, community insurance &amp; club treasuries on the same primitive.</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10 — Ask -->
+    <section class="slide">
+      <div class="ask">
+        <div>
+          <p class="eyebrow gold">The ask</p>
+          <h2>Web2-easy. On-chain-trustless.<br><span class="coral">곗돈, finally without the risk.</span></h2>
+          <div class="asklist">
+            <div class="card aitem"><h4>Grant &amp; program support</h4><p>To grow circles and reach production stage.</p></div>
+            <div class="card aitem"><h4>Upbit wallet integration</h4><p>Fund circles directly from an Upbit balance.</p></div>
+            <div class="card aitem"><h4>Demo Day at Korea Blockchain Week</h4><p>Put trustless kye in front of Korea's builders.</p></div>
+          </div>
+        </div>
+        <div class="card team col">
+          <div class="lbl">TEAM</div>
+          <div class="name">Ritesh</div>
+          <p>Solo builder — contracts, frontend &amp; deployment.</p>
+          <div class="handle">@Ritesh5969</div>
+          <p style="font-style:italic;margin-top:1.4cqh">Contact: add email before submitting</p>
+        </div>
+      </div>
+      <div class="ask-foot">Live on GIWA Sepolia · sepolia-explorer.giwa.io</div>
+    </section>
+
+  </div>
+</div>
+
+<div class="hint">← → to navigate</div>
+<div class="chrome">
+  <button class="arrow" id="prev" aria-label="Previous slide">‹</button>
+  <div class="dots" id="dots"></div>
+  <span class="counter" id="counter">01 / 10</span>
+  <button class="arrow" id="next" aria-label="Next slide">›</button>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll(".slide"));
+  const dotsWrap = document.getElementById("dots");
+  const counter = document.getElementById("counter");
+  let i = 0;
+
+  slides.forEach((_, n) => {
+    const b = document.createElement("button");
+    b.setAttribute("aria-label", "Go to slide " + (n + 1));
+    b.addEventListener("click", () => go(n));
+    dotsWrap.appendChild(b);
+  });
+  const dots = Array.from(dotsWrap.children);
+
+  function go(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach((s, k) => s.classList.toggle("active", k === i));
+    dots.forEach((d, k) => d.classList.toggle("on", k === i));
+    counter.textContent = String(i + 1).padStart(2, "0") + " / " + String(slides.length).padStart(2, "0");
+  }
+  document.getElementById("next").addEventListener("click", () => go(i + 1));
+  document.getElementById("prev").addEventListener("click", () => go(i - 1));
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowRight" || e.key === "PageDown" || e.key === " ") { e.preventDefault(); go(i + 1); }
+    else if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); go(i - 1); }
+    else if (e.key === "Home") go(0);
+    else if (e.key === "End") go(slides.length - 1);
+  });
+  // click right/left half of the stage to advance
+  document.getElementById("stage").addEventListener("click", (e) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    if (e.clientX - r.left > r.width / 2) go(i + 1); else go(i - 1);
+  });
+  go(0);
+</script>

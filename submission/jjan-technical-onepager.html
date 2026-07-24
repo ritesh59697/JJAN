@@ -1,0 +1,214 @@
+<meta charset="utf-8">
+<title>Jjan — Technical Design Document</title>
+
+<style>
+  :root {
+    --paper: #FBFBFD;
+    --ink: #17171F;
+    --muted: #5B5B6E;
+    --faint: #8A8A9C;
+    --rule: #E4E4EC;
+    --panel: #F4F4F8;
+    --coral: #D6304F;
+    --gold: #B07A00;
+    --green: #1B8F4D;
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+    --sans: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #101017; --ink: #ECECF5; --muted: #A6A6BC; --faint: #7C7C92;
+      --rule: #2A2A3A; --panel: #1A1A26; --coral: #FF5470; --gold: #FFB400; --green: #35D07F;
+    }
+  }
+  :root[data-theme="light"] {
+    --paper: #FBFBFD; --ink: #17171F; --muted: #5B5B6E; --faint: #8A8A9C;
+    --rule: #E4E4EC; --panel: #F4F4F8; --coral: #D6304F; --gold: #B07A00; --green: #1B8F4D;
+  }
+  :root[data-theme="dark"] {
+    --paper: #101017; --ink: #ECECF5; --muted: #A6A6BC; --faint: #7C7C92;
+    --rule: #2A2A3A; --panel: #1A1A26; --coral: #FF5470; --gold: #FFB400; --green: #35D07F;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--paper); }
+  body {
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 9.7px;
+    line-height: 1.46;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page {
+    max-width: 190mm;
+    margin: 0 auto;
+    padding: 10mm 14mm 8mm;
+  }
+
+  a { color: var(--coral); text-decoration: none; }
+
+  /* header */
+  .top { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; padding-bottom: 10px; border-bottom: 2px solid var(--ink); }
+  .brand { font-size: 30px; font-weight: 800; letter-spacing: -.02em; line-height: 1; }
+  .brand .k { color: var(--coral); }
+  .brand-sub { font-size: 11px; color: var(--muted); margin-top: 5px; font-weight: 600; }
+  .docmeta { text-align: right; font-size: 9px; color: var(--muted); line-height: 1.6; }
+  .docmeta b { color: var(--ink); }
+  .doctype { font-size: 9.5px; letter-spacing: .22em; text-transform: uppercase; font-weight: 700; color: var(--gold); }
+
+  .summary { margin: 11px 0 0; font-size: 12.5px; line-height: 1.45; }
+  .summary b { color: var(--coral); }
+
+  .links { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 9px 0 2px; font-size: 9.3px; }
+  .links span { color: var(--faint); }
+  .links .lbl { font-weight: 700; color: var(--ink); text-transform: uppercase; letter-spacing: .08em; font-size: 8.3px; }
+
+  h2 {
+    font-size: 9.5px; letter-spacing: .18em; text-transform: uppercase; font-weight: 700;
+    color: var(--coral); margin: 10px 0 6px; padding-bottom: 3px; border-bottom: 1px solid var(--rule);
+  }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 7px 20px; }
+  p { margin: 0 0 6px; }
+  .muted { color: var(--muted); }
+  strong { color: var(--ink); }
+
+  /* contracts / architecture */
+  .flow { display: flex; align-items: stretch; gap: 6px; margin: 4px 0 9px; }
+  .node { flex: 1; background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; padding: 7px 8px; }
+  .node .n { font-weight: 800; font-size: 10px; }
+  .node .n.mono { font-family: var(--mono); }
+  .node .d { color: var(--muted); font-size: 8.7px; margin-top: 2px; line-height: 1.35; }
+  .arrowc { display: flex; align-items: center; color: var(--faint); font-weight: 700; font-size: 12px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 9.2px; }
+  th, td { text-align: left; padding: 4px 8px 4px 0; vertical-align: top; border-bottom: 1px solid var(--rule); }
+  th { font-size: 8.2px; text-transform: uppercase; letter-spacing: .1em; color: var(--faint); font-weight: 700; }
+  td.mono, .mono { font-family: var(--mono); }
+  .fn { font-family: var(--mono); color: var(--ink); font-weight: 600; }
+
+  ul { margin: 0 0 6px; padding-left: 15px; }
+  li { margin: 0 0 3.5px; }
+  li b, li strong { color: var(--ink); }
+
+  .lifecycle { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 2px 0 8px; }
+  .lc { background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; padding: 6px 7px; }
+  .lc .s { font-family: var(--mono); font-weight: 700; font-size: 9.3px; color: var(--coral); }
+  .lc .t { color: var(--muted); font-size: 8.5px; margin-top: 2px; line-height: 1.32; }
+
+  .addr-tag { display: inline-block; font-size: 7.6px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--green); border: 1px solid var(--green); border-radius: 4px; padding: 1px 6px; vertical-align: middle; margin-left: 6px; }
+
+  .callout { background: var(--panel); border-left: 3px solid var(--coral); border-radius: 0 6px 6px 0; padding: 8px 11px; margin: 4px 0 8px; }
+  .callout .h { font-weight: 800; font-size: 10px; }
+  .callout p { margin: 3px 0 0; color: var(--muted); font-size: 9.3px; }
+
+  .foot { margin-top: 8px; padding-top: 5px; border-top: 1px solid var(--rule); display: flex; justify-content: space-between; font-size: 8.6px; color: var(--faint); }
+
+  @page { size: A4; margin: 0; }
+  @media print {
+    .page { max-width: none; margin: 0; padding: 12mm 13mm; }
+    a { color: var(--ink); }
+    h2 { break-after: avoid; }
+    .flow, .lifecycle, table, .callout { break-inside: avoid; }
+  }
+</style>
+
+<div class="page">
+
+  <div class="top">
+    <div>
+      <div class="brand"><span class="k">Jjan</span> 짠</div>
+      <div class="brand-sub">Trustless on-chain 곗돈 (kye) — rotating savings circles no organizer can rug</div>
+    </div>
+    <div class="docmeta">
+      <div class="doctype">Technical Design Document</div>
+      <div style="margin-top:4px">GASOK MVP Build Phase · 2026</div>
+      <div>Tracks: <b>Consumer/Social · Mass Adoption · GIWA-Native</b></div>
+      <div>Author: <b>Ritesh</b> · @Ritesh5969</div>
+    </div>
+  </div>
+
+  <p class="summary">Jjan rebuilds Korea's <strong>kye</strong> — informal rotating savings clubs — as a smart contract. Members contribute a fixed amount each round and the pot rotates to one member at a time, but the <b>contract</b> custodies every won and pays the scheduled recipient automatically. There is no admin key and no code path that can divert the pot, so the organizer-rug that plagues traditional kye becomes impossible. Built on GIWA because many small, recurring payments only feel good on a fast, near-free chain.</p>
+
+  <div class="links">
+    <span class="lbl">Live app</span><span>Next.js + wagmi/viem, GIWA Sepolia (runs from <span class="mono">web/</span>)</span>
+    <span class="lbl">Pitch deck</span><span>claude.ai/code/artifact/c07e29a9…</span>
+    <span class="lbl">Explorer</span><span>sepolia-explorer.giwa.io</span>
+  </div>
+
+  <h2>System architecture</h2>
+  <div class="flow">
+    <div class="node"><div class="n mono">CircleFactory</div><div class="d">Deploys each circle as an EIP-1167 clone of one implementation; authorizes it to write reputation.</div></div>
+    <div class="arrowc">→</div>
+    <div class="node"><div class="n mono">Circle</div><div class="d">Per-club escrow &amp; rotation state machine. Holds the stablecoin; enforces every rule below.</div></div>
+    <div class="arrowc">→</div>
+    <div class="node"><div class="n mono">ReputationRegistry</div><div class="d">Global per-wallet reliability score; only factory-authorized circles may write deltas.</div></div>
+  </div>
+  <p class="muted">Contributions and bonds are held in <span class="mono">MockKRW</span>, a testnet KRW stablecoin (open faucet) that a real bridged/canonical stablecoin replaces on mainnet. One <span class="mono">Circle</span> implementation is deployed once; every new club is a minimal-proxy clone, so creating a circle costs a fraction of a full deployment.</p>
+
+  <h2>Circle lifecycle</h2>
+  <div class="lifecycle">
+    <div class="lc"><div class="s">join()</div><div class="t">Invited member posts a bond; joins the circle.</div></div>
+    <div class="lc"><div class="s">start()</div><div class="t">Opens round 1 once every member has joined.</div></div>
+    <div class="lc"><div class="s">contribute()</div><div class="t">Pays the fixed amount into escrow this round.</div></div>
+    <div class="lc"><div class="s">closeRound()</div><div class="t">Slashes no-shows, pays the fixed recipient, rotates.</div></div>
+    <div class="lc"><div class="s">withdrawBond()</div><div class="t">Returns remaining bond after the circle finishes.</div></div>
+  </div>
+  <p class="muted">Payout order is fixed at creation, so each round's recipient is deterministic and never caller-selectable. A member who misses a round is slashed up to one contribution from their bond into that round's pot, keeping the circle solvent and honest members whole. <span class="mono">closeRound()</span> is callable by anyone once the round window elapses.</p>
+
+  <div class="grid2">
+    <div>
+      <h2>Security model</h2>
+      <ul>
+        <li><b>No custodial drain.</b> Funds leave a circle only via <span class="mono">closeRound</span> (to the round's fixed recipient) or <span class="mono">withdrawBond</span> (to the member). No owner, admin, <span class="mono">selfdestruct</span>, or arbitrary-call path exists.</li>
+        <li><b>Solvency invariant.</b> <span class="mono">balance ≥ liveBonds + unpaidEscrow</span> holds by construction and is proven under fuzzing (see verification).</li>
+        <li><b>Reentrancy.</b> Every fund-moving function is <span class="mono">nonReentrant</span> and follows checks-effects-interactions; bonds use pull-payment.</li>
+        <li><b>Access control.</b> Only factory-authorized circles write reputation; the factory alone can authorize.</li>
+        <li><b>Input hardening.</b> Duplicate and zero-address members and a &lt;2-member circle are rejected at init; the clone initializer is one-shot.</li>
+      </ul>
+    </div>
+    <div>
+      <h2>Testing &amp; on-chain verification</h2>
+      <ul>
+        <li><b>9 / 9 tests green</b> — unit, a 256-run fuzz test for pot conservation, and a handler-driven solvency invariant.</li>
+        <li><b>Invariant: 128,000 randomized calls, zero reverts</b> — <span class="mono">balance ≥ obligations()</span> never broke across random join/contribute/close/withdraw sequences.</li>
+        <li><b>Deployed &amp; source-verified</b> on GIWA Sepolia (chain <span class="mono">91342</span>) via Blockscout; deploy cost ≈ <span class="mono">$0</span> at ~0.001 gwei.</li>
+      </ul>
+      <table>
+        <tr><th>Contract</th><th>Address <span class="addr-tag">Verified</span></th></tr>
+        <tr><td class="fn">CircleFactory</td><td class="mono">0x7f01effDbEe10d31f300E2b3Fed000C061940551</td></tr>
+        <tr><td class="fn">ReputationRegistry</td><td class="mono">0x0cd53f090471d4aD3f14bEFaC1F60D7F3F076204</td></tr>
+        <tr><td class="fn">MockKRW</td><td class="mono">0x6F82D1b448C3e742e2Da3455611c268C6D72f53B</td></tr>
+        <tr><td class="fn">Circle (impl)</td><td class="mono">0xf2b12af647ecf2341960e901e4ee8ba55639377b</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div>
+      <h2>Tech stack</h2>
+      <p class="muted"><strong>Contracts:</strong> Solidity 0.8.24, Foundry (fuzz + invariant), OpenZeppelin (<span class="mono">ReentrancyGuard</span>, <span class="mono">SafeERC20</span>, <span class="mono">Clones</span>, <span class="mono">ERC20</span>).<br>
+      <strong>Frontend:</strong> Next.js 15 (App Router), wagmi v2 + viem, TanStack Query. Injected connector for the MVP — connector-agnostic, so social login (Privy/Dynamic/Web3Auth) is a one-file swap.<br>
+      <strong>Deploy:</strong> Foundry scripts to GIWA Sepolia; Blockscout verification.</p>
+    </div>
+    <div>
+      <h2>Why GIWA</h2>
+      <p class="muted">A club is many small, recurring transfers — unusable on L1. GIWA's OP-Stack L2 gives <strong>~1s blocks</strong> and <strong>~200ms Flashblocks preconfirmations</strong>, so a payout lands the instant a round closes, and <strong>near-zero gas</strong> makes micro-contributions viable. Upbit distribution adds a Korea-native user base and a direct funding path into circles.</p>
+    </div>
+  </div>
+
+  <h2>Roadmap &amp; known limitations</h2>
+  <div class="grid2">
+    <div>
+      <p class="muted"><strong>Next:</strong> social-login onboarding · timelocked <span class="mono">emergencyWithdraw()</span> for stalled circles · missed-round insurance pool · a real KRW stablecoin. <strong>Then:</strong> yield on idle escrow · VRF payout ordering · credit scoring from reputation. <strong>Scale:</strong> the same escrow-and-rotate primitive → group buying, community insurance, club treasuries.</p>
+    </div>
+    <div>
+      <p class="muted"><strong>Current limitations (by design, testnet MVP):</strong> uses <span class="mono">MockKRW</span> not a real stablecoin; payout order is fixed rather than VRF-randomized; a stalled circle has no early-exit yet (planned <span class="mono">emergencyWithdraw</span>); onboarding is via an injected wallet, not yet social login. None affect the custody guarantee.</p>
+    </div>
+  </div>
+
+  <div class="foot">
+    <span>Jjan 짠 · Technical Design Document · GASOK MVP Build Phase</span>
+    <span>Ritesh · @Ritesh5969 · Live &amp; verified on GIWA Sepolia</span>
+  </div>
+
+</div>

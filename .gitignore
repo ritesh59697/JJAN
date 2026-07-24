@@ -1,0 +1,11 @@
+cache/
+out/
+broadcast/
+.env
+.DS_Store
+
+# node
+node_modules/
+web/.next/
+web/node_modules/
+submission/node_modules/

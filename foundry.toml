@@ -1,0 +1,24 @@
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib"]
+solc = "0.8.24"
+optimizer = true
+optimizer_runs = 200
+remappings = [
+    "@openzeppelin/=lib/openzeppelin-contracts/",
+    "forge-std/=lib/forge-std/src/",
+]
+fs_permissions = [{ access = "read", path = "./" }]
+
+# GIWA Sepolia testnet (OP Stack, chain id 91342). Verified from docs.giwa.io.
+[rpc_endpoints]
+giwa_testnet = "${GIWA_RPC_URL}"
+
+# Explorer is Blockscout-style; verify with:
+#   forge verify-contract --chain 91342 --verifier blockscout \
+#     --verifier-url https://sepolia-explorer.giwa.io/api/ <addr> <Contract>
+# The [etherscan] block lets `forge script --verify` pick up the URL; the key is
+# a placeholder because Blockscout does not require an API key.
+[etherscan]
+giwa_testnet = { key = "${GIWA_EXPLORER_API_KEY}", url = "https://sepolia-explorer.giwa.io/api/", chain = 91342 }
