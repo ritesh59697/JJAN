@@ -31,7 +31,7 @@ export function Connect() {
           Switch to GIWA
         </button>
       )}
-      <span className="pill ok">● {short(address)}</span>
+      <span className="pill ok"><span className="dot" /> {short(address)}</span>
       <button className="ghost" onClick={() => disconnect()}>
         Disconnect
       </button>

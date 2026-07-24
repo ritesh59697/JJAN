@@ -47,9 +47,9 @@ export function AsciiHero() {
         const t = Math.abs(r - mid) / half; // 0 at ring centerline, 1 at band edge
 
         let p: number;
-        if (t <= 0.82) p = 0.9; // dense ring core
-        else if (t <= 1.25) p = 0.05 + 0.85 * (1 - (t - 0.82) / 0.43); // halftone edge
-        else p = 0.07 * Math.exp(-(t - 1.25) * 1.3); // faint spray, fading out
+        if (t <= 0.86) p = 0.92; // dense ring core
+        else if (t <= 1) p = 0.12 + 0.8 * (1 - (t - 0.86) / 0.14); // clean falloff at edge
+        else p = 0; // no scattered spray — keep it a crisp ring, not a dot field
 
         line += rand() < p ? GLYPHS[(rand() * GLYPHS.length) | 0] : " ";
       }

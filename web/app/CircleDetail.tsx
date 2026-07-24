@@ -3,11 +3,13 @@
 import { useAccount, useReadContract, useReadContracts, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { formatUnits, type Address } from "viem";
 import { abis, addresses } from "@/lib/contracts";
+import { TxLink } from "./TxLink";
+import { IconCheck } from "./icons";
 
 function short(a: string) {
   return `${a.slice(0, 6)}…${a.slice(-4)}`;
 }
-const fmt = (v?: bigint) => (v === undefined ? "—" : Number(formatUnits(v, 18)).toLocaleString());
+const fmt = (v?: bigint) => (v === undefined ? "-" : Number(formatUnits(v, 18)).toLocaleString());
 
 export function CircleDetail({ circle }: { circle: Address }) {
   const { address } = useAccount();
@@ -86,7 +88,7 @@ export function CircleDetail({ circle }: { circle: Address }) {
       <div className="round-track">
         {members.map((m, i) => (
           <div key={m} className={`round-node ${i === currentRound && started && !finished ? "current" : ""} ${i < currentRound ? "done" : ""}`}>
-            <div className="r">Round {i + 1} → paid to</div>
+            <div className="r">Round {i + 1} recipient</div>
             <div className="who mono">{short(m)}{address && m.toLowerCase() === address.toLowerCase() ? " (you)" : ""}</div>
           </div>
         ))}
@@ -105,10 +107,10 @@ export function CircleDetail({ circle }: { circle: Address }) {
         {started && !finished && (
           <>
             <button onClick={() => tx("contribute")} disabled={busy || paidThisRound === true}>
-              {paidThisRound ? "Contributed ✓" : "Contribute this round"}
+              {paidThisRound ? (<><IconCheck /> Contributed</>) : "Contribute this round"}
             </button>
             <button className="gold" onClick={() => tx("closeRound")} disabled={busy}>
-              Close round → pay out
+              Close round, pay out
             </button>
           </>
         )}
@@ -116,10 +118,11 @@ export function CircleDetail({ circle }: { circle: Address }) {
           <button onClick={() => tx("withdrawBond")} disabled={busy}>Withdraw bond</button>
         )}
         {busy && <span className="pill">Working…</span>}
+        <TxLink hash={hash} />
       </div>
 
       <p className="notice">
-        Payout goes to the round&apos;s scheduled member automatically — there is no function anywhere
+        Payout goes to the round&apos;s scheduled member automatically. There is no function anywhere
         that lets the organizer take the pot.
       </p>
     </div>

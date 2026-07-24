@@ -9,13 +9,11 @@ import { Connect } from "./Connect";
 import { Faucet } from "./Faucet";
 import { CreateCircle } from "./CreateCircle";
 import { CircleDetail } from "./CircleDetail";
+import { CircleRow } from "./CircleRow";
 import { Landing } from "./Landing";
+import { IconArrowLeft } from "./icons";
 
 const NOT_DEPLOYED = addresses.factory === "0x0000000000000000000000000000000000000000";
-
-function short(a: string) {
-  return `${a.slice(0, 6)}…${a.slice(-4)}`;
-}
 
 export default function Home() {
   const { isConnected } = useAccount();
@@ -37,11 +35,17 @@ export default function Home() {
       <div className="topbar">
         <div className="brand">
           <h1>Jjan</h1>
-          <span className="ko">짠 · on-chain 곗돈</span>
+          <span className="ko">짠<i className="sep" />on-chain 곗돈</span>
         </div>
         <Connect />
       </div>
-      <p className="tag">Save with friends. The smart contract holds the pot — no organizer can run off with it. Built on GIWA.</p>
+      {isConnected && !wrongChain ? (
+        <p className="tag net">
+          <span className="dot" /> Connected to {giwaTestnet.name} testnet, mock KRW (not real funds)
+        </p>
+      ) : (
+        <p className="tag">Save with friends. The smart contract holds the pot, so no organizer can run off with it. Built on GIWA.</p>
+      )}
 
       {NOT_DEPLOYED && (
         <div className="card">
@@ -74,7 +78,7 @@ export default function Home() {
           <Faucet />
           {selected ? (
             <>
-              <button className="ghost" onClick={() => setSelected(null)}>← All circles</button>
+              <button className="ghost" onClick={() => setSelected(null)}><IconArrowLeft /> All circles</button>
               <CircleDetail circle={selected} />
             </>
           ) : (
@@ -83,12 +87,9 @@ export default function Home() {
               <div className="card">
                 <h2>Circles</h2>
                 <p className="sub">{list.length} created</p>
-                {list.length === 0 && <p className="empty">No circles yet — start one above.</p>}
+                {list.length === 0 && <p className="empty">No circles yet. Start one above.</p>}
                 {list.map((c) => (
-                  <div key={c} className="circle-item" onClick={() => setSelected(c)}>
-                    <span className="mono">{short(c)}</span>
-                    <span className="pill">Open →</span>
-                  </div>
+                  <CircleRow key={c} circle={c} onOpen={() => setSelected(c)} />
                 ))}
               </div>
             </>

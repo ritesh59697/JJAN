@@ -10,7 +10,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Jjan — trustless 곗돈 on GIWA",
+  title: "Jjan: trustless 곗돈 on GIWA",
   description: "Save with friends on-chain. No organizer can run off with the pot.",
 };
 

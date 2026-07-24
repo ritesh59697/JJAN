@@ -34,6 +34,10 @@ body {
 a { color: var(--text); text-decoration: none; border-bottom: 1px solid var(--border-strong); }
 a:hover { border-bottom-color: var(--text); }
 
+/* Small shared components (used instead of emoji / middot glyphs) */
+.dot { width: 8px; height: 8px; border-radius: 999px; background: currentColor; display: inline-block; flex: none; }
+.sep { display: inline-block; width: 1px; height: 0.9em; background: currentColor; opacity: 0.26; margin: 0 9px; vertical-align: -1px; }
+
 .container { max-width: 940px; margin: 0 auto; padding: 22px 20px 96px; }
 
 /* ---- Top bar ---- */
@@ -45,6 +49,8 @@ a:hover { border-bottom-color: var(--text); }
 .brand h1 { font-size: 24px; margin: 0; font-weight: 800; letter-spacing: -0.03em; }
 .brand .ko { color: var(--muted); font-size: 14px; }
 .tag { color: var(--muted); font-size: 13.5px; line-height: 1.5; margin: 2px 0 0; max-width: 640px; }
+.tag.net { display: inline-flex; align-items: center; gap: 8px; }
+.tag.net .dot { width: 8px; height: 8px; border-radius: 999px; background: var(--ok); display: inline-block; }
 
 /* ---- Cards ---- */
 .card {
@@ -62,6 +68,15 @@ a:hover { border-bottom-color: var(--text); }
 .grow { flex: 1 1 auto; }
 
 label { display: block; font-size: 12px; color: var(--muted); margin: 12px 0 5px; font-weight: 500; }
+
+.label-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.chip-btn {
+  background: var(--field); color: var(--text); border: 1px solid var(--border-strong);
+  border-radius: 999px; padding: 5px 12px; font-size: 12px; font-weight: 600;
+  box-shadow: none;
+}
+.chip-btn:hover { border-color: var(--text); box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06); }
+.chip-btn:disabled { opacity: 1; color: var(--ok); border-color: #cdead9; background: #f2fbf6; cursor: default; }
 
 input, textarea {
   width: 100%; background: var(--field); color: var(--text);
@@ -113,6 +128,34 @@ button.gold:hover { box-shadow: 0 4px 14px rgba(18, 161, 80, 0.28); }
 }
 .circle-item:hover { border-color: var(--text); box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05); }
 .mono { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12px; color: var(--muted); }
+
+.circle-item .ci-main { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.ci-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.ci-top .mono { font-size: 13px; color: var(--text); }
+.ci-meta { display: flex; align-items: center; font-size: 12.5px; color: var(--muted); }
+.ci-right { display: flex; align-items: center; gap: 14px; flex: none; }
+.ci-open { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 600; color: var(--text); }
+.tagchip {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; font-weight: 600; letter-spacing: -0.01em;
+  padding: 3px 9px; border-radius: 999px;
+  background: var(--field); color: var(--muted); border: 1px solid var(--border);
+}
+.tagchip.turn { background: #f2fbf6; color: var(--go); border-color: #cdead9; }
+
+.skeleton {
+  display: inline-block; height: 12px; border-radius: 6px;
+  background: linear-gradient(90deg, #eee 25%, #f5f5f5 37%, #eee 63%);
+  background-size: 400% 100%; animation: shimmer 1.4s ease infinite;
+}
+@keyframes shimmer { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
+
+.txlink {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 12.5px; font-weight: 500; color: var(--muted);
+  border-bottom: 1px solid var(--border-strong);
+}
+.txlink:hover { color: var(--text); border-bottom-color: var(--text); }
 
 /* ---- Round track ---- */
 .round-track { display: flex; gap: 8px; margin: 16px 0; flex-wrap: wrap; }
@@ -187,17 +230,10 @@ button.gold:hover { box-shadow: 0 4px 14px rgba(18, 161, 80, 0.28); }
 /* ---- Trust-model callout (testimonial slot) ---- */
 .callout {
   position: relative; overflow: hidden;
-  margin-top: 40px; padding: 40px 36px;
-  border: 1px solid var(--border); border-radius: var(--radius);
+  margin-top: 40px; padding: 36px;
+  border: 1px solid var(--border); border-left: 3px solid var(--text);
+  border-radius: var(--radius);
   background: var(--panel-2);
-}
-.callout-dots {
-  position: absolute; inset: 0; pointer-events: none;
-  background-image: radial-gradient(var(--faint) 1px, transparent 1.1px);
-  background-size: 12px 12px;
-  -webkit-mask-image: radial-gradient(90% 120% at 100% 0%, #000 0%, transparent 55%);
-  mask-image: radial-gradient(90% 120% at 100% 0%, #000 0%, transparent 55%);
-  opacity: 0.6;
 }
 .callout blockquote {
   position: relative; margin: 0; max-width: 640px;

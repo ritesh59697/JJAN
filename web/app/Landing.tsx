@@ -2,6 +2,7 @@
 
 import { Connect } from "./Connect";
 import { AsciiHero } from "./AsciiHero";
+import { IconBolt } from "./icons";
 import { giwaTestnet } from "@/lib/chain";
 
 const steps = [
@@ -41,7 +42,7 @@ const faqs = [
   },
   {
     q: "Is this real money?",
-    a: "Not yet. Jjan runs on the GIWA Sepolia testnet using mKRW, a mock KRW stablecoin with an open faucet. It's for demonstrating the trustless mechanics — no real funds are involved.",
+    a: "Not yet. Jjan runs on the GIWA Sepolia testnet using mKRW, a mock KRW stablecoin with an open faucet. It's for demonstrating the trustless mechanics; no real funds are involved.",
   },
   {
     q: "Which network is it on, and how fast?",
@@ -63,12 +64,12 @@ export function Landing() {
           No one runs off with it.
         </h1>
         <p className="lead">
-          A trustless, on-chain <span className="ko">곗돈</span> — rotating savings circles where the smart
+          A trustless, on-chain <span className="ko">곗돈</span>. Rotating savings circles where the smart
           contract holds the pot, not an organizer who could run off with it.
         </p>
         <div className="hero-badges">
           <span className="b"><span className="dot" /> Non-custodial by design</span>
-          <span className="b">⚡ ~1s payouts on GIWA</span>
+          <span className="b"><IconBolt /> ~1s payouts on GIWA</span>
         </div>
         <div className="hero-cta">
           <Connect />
@@ -92,7 +93,7 @@ export function Landing() {
       <section className="section">
         <p className="eyebrow">Why trustless</p>
         <p className="section-lead">
-          Kye circles traditionally run on trust via KakaoTalk — and organizers regularly abscond with the
+          Kye circles traditionally run on trust via KakaoTalk, and organizers regularly abscond with the
           pot. Jjan removes the trust: escrow and payout are enforced by code, not a promise.
         </p>
         <div className="stat">
@@ -111,9 +112,8 @@ export function Landing() {
         </div>
 
         <div className="callout">
-          <div className="callout-dots" aria-hidden="true" />
           <blockquote>
-            The contract is the organizer. It can hold the pot and pay the scheduled member — and that
+            The contract is the organizer. It can hold the pot and pay the scheduled member, and that
             is <em>all</em> it can do. There is no function, anywhere, that lets anyone take the money.
           </blockquote>
         </div>
@@ -142,7 +142,7 @@ export function Landing() {
       </section>
 
       <footer className="landing-footer">
-        {giwaTestnet.name} testnet · mock KRW, not real funds ·{" "}
+        {giwaTestnet.name} testnet<i className="sep" />mock KRW, not real funds<i className="sep" />
         <a href={giwaTestnet.blockExplorers.default.url} target="_blank" rel="noreferrer">
           Explorer
         </a>
