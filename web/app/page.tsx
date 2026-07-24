@@ -9,6 +9,7 @@ import { Connect } from "./Connect";
 import { Faucet } from "./Faucet";
 import { CreateCircle } from "./CreateCircle";
 import { CircleDetail } from "./CircleDetail";
+import { Landing } from "./Landing";
 
 const NOT_DEPLOYED = addresses.factory === "0x0000000000000000000000000000000000000000";
 
@@ -55,10 +56,7 @@ export default function Home() {
       )}
 
       {!isConnected ? (
-        <div className="card">
-          <h2>Connect to begin</h2>
-          <p className="sub">Connect a wallet on the GIWA testnet to create or join a circle.</p>
-        </div>
+        <Landing />
       ) : (
         wrongChain ? (
         <div className="card">
