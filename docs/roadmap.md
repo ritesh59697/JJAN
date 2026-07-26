@@ -12,11 +12,13 @@ frontend, and deployment complete; 9/9 tests green including the solvency invari
 {% endtab %}
 
 {% tab title="Next" %}
-* **Account Abstraction & Batched Transactions**: Combine `Approve` and `Join` actions into a single transaction signature (gasless paymasters).
+* **Account Abstraction & Batched Transactions**: Combine `Approve` and `Join` actions into a single transaction signature.
 * **Session Keys / Autopay**: Allow users to authorize Jjan to pull round contributions automatically in the background without popups.
 * **Relayer Automation**: Automatically call `closeRound()` via decentralized keepers (e.g. Gelato/Chainlink) as soon as the timer hits `0:00`.
 * **Social Login Onboarding**: Switch the wagmi connector to Privy/Dynamic for google/kakao social login signup.
 * **Timelocked Exit**: Implement `emergencyWithdraw()` for stalled circles.
+* **Missed-round insurance pool**: Create a decentralized backup pool to cover default cases.
+* **A real KRW stablecoin**: Swap for a bridged/canonical KRW stablecoin instead of `MockKRW`.
 {% endtab %}
 
 {% tab title="Then" %}
