@@ -12,16 +12,18 @@ frontend, and deployment complete; 9/9 tests green including the solvency invari
 {% endtab %}
 
 {% tab title="Next" %}
-* Social-login onboarding (embedded wallet) for true Web2-easy signup
-* Timelocked `emergencyWithdraw()` for stalled circles
-* Missed-round insurance pool
-* A real KRW stablecoin instead of `MockKRW`
+* **Account Abstraction & Batched Transactions**: Combine `Approve` and `Join` actions into a single transaction signature (gasless paymasters).
+* **Session Keys / Autopay**: Allow users to authorize Jjan to pull round contributions automatically in the background without popups.
+* **Relayer Automation**: Automatically call `closeRound()` via decentralized keepers (e.g. Gelato/Chainlink) as soon as the timer hits `0:00`.
+* **Social Login Onboarding**: Switch the wagmi connector to Privy/Dynamic for google/kakao social login signup.
+* **Timelocked Exit**: Implement `emergencyWithdraw()` for stalled circles.
 {% endtab %}
 
 {% tab title="Then" %}
-* Yield on idle escrow between rounds
-* VRF-randomized payout ordering
-* Credit scoring derived from on-chain reputation
+* **Gas Sponsorship**: Paymasters sponsor user gas fees entirely on GIWA to provide a zero-gas onboarding experience.
+* **Yield Escrow**: Earn interest on idle escrow assets between rounds.
+* **VRF Ordering**: Randomize payout schedules using on-chain entropy.
+* **Credit Rating**: Leverage `ReputationRegistry` history for credit scores.
 {% endtab %}
 
 {% tab title="Scale" %}
