@@ -8,7 +8,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /// @notice Creates one demo circle from an already-deployed factory + mKRW, for the
 ///         demo video. Members/amounts come from env so you can wire real testnet wallets.
-///   FACTORY=0x.. MKRW=0x.. M1=0x.. M2=0x.. M3=0x.. \
+///   FACTORY=0x.. MKRW=0x.. M1=0x.. M2=0x.. M3=0x.. [ROUND_DURATION=60] \
 ///   forge script script/DemoCircle.s.sol --rpc-url giwa_testnet --broadcast
 contract DemoCircle is Script {
     function run() external {
@@ -21,11 +21,15 @@ contract DemoCircle is Script {
         order[1] = vm.envAddress("M2");
         order[2] = vm.envAddress("M3");
 
+        // closeRound() cannot fire until the round elapses, so keep this short
+        // enough that the payout lands on camera.
+        uint256 roundDuration = vm.envOr("ROUND_DURATION", uint256(5 minutes));
+
         vm.startBroadcast(pk);
         address circle = factory.createCircle(
             IERC20(mkrw),
             100_000e18, // 100k mKRW / round
-            5 minutes, // short round for a live demo
+            roundDuration,
             50_000e18, // bond
             order
         );

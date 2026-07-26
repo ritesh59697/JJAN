@@ -1,20 +1,23 @@
 "use client";
 
+import Link from "next/link";
+import { useAccount } from "wagmi";
 import { Connect } from "./Connect";
 import { AsciiHero } from "./AsciiHero";
 import { InfoSections } from "./InfoSections";
 import { IconBolt, IconArrowRight } from "./icons";
 import { giwaTestnet } from "@/lib/chain";
 
-// `onEnterApp` is passed only when the wallet is already connected (viewing the
-// homepage from inside the app), so the CTAs route to the dashboard instead of
-// showing the connect button again.
-export function Landing({ onEnterApp }: { onEnterApp?: () => void }) {
+// Once a wallet is connected the CTAs link straight to /dashboard; otherwise they
+// show the connect button, since the dashboard is useless without a wallet.
+export function Landing() {
+  const { isConnected } = useAccount();
+
   const renderCta = () =>
-    onEnterApp ? (
-      <button onClick={onEnterApp}>
+    isConnected ? (
+      <Link className="btn-link" href="/dashboard">
         Open dashboard <IconArrowRight />
-      </button>
+      </Link>
     ) : (
       <Connect />
     );
@@ -32,7 +35,7 @@ export function Landing({ onEnterApp }: { onEnterApp?: () => void }) {
           contract holds the pot, not an organizer who could run off with it.
         </p>
         <div className="hero-badges">
-          <span className="b"><span className="dot" /> Non-custodial by design</span>
+          <span className="b">Non-custodial by design</span>
           <span className="b"><IconBolt /> ~1s payouts on GIWA</span>
         </div>
         <div className="hero-cta">{renderCta()}</div>

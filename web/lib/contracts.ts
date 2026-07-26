@@ -11,6 +11,11 @@ export const addresses = {
   mkrw: (process.env.NEXT_PUBLIC_MKRW ?? "0x0000000000000000000000000000000000000000") as Address,
 };
 
+// True until `NEXT_PUBLIC_FACTORY` is set; the UI degrades to a "not wired yet"
+// notice instead of firing reads at the zero address.
+export const NOT_DEPLOYED =
+  addresses.factory === "0x0000000000000000000000000000000000000000";
+
 export const abis = {
   circle: CircleAbi,
   factory: CircleFactoryAbi,

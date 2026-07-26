@@ -16,7 +16,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={inter.variable}>
+    // next-themes sets data-theme on <html> before paint, which the server can't
+    // predict — suppressHydrationWarning keeps React from flagging that diff.
+    <html lang="en" className={inter.variable} suppressHydrationWarning>
       <body>
         <Providers>{children}</Providers>
       </body>

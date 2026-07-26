@@ -144,10 +144,16 @@ looks stale.
 
 - ✅ Contracts complete, tested (9/9 green), deployed + verified on GIWA Sepolia.
 - ✅ Frontend wired to the live deployment.
-- ⏳ Seed a demo circle (via `DemoCircle.s.sol`) with controllable wallets.
+- ✅ Pitch deck (10 slides, `submission/Jjan-Pitch-Deck.pptx`) + technical one-pager
+  (`submission/Jjan-Technical-Design-Doc.pdf`).
+- ✅ Demo circle seeded at `0x23b3B64C57E721D1f21Dcb429e7d709A9732A108` with three
+  controllable wallets (60s rounds). Round 1 is closed and paid out; **round 2 is
+  fully funded and its timer has expired, so `closeRound()` pays out instantly** —
+  that is the money shot, left primed on purpose. Member keys are in `.env.demo`
+  (gitignored); M1 is the deployer. Re-seed with `script/DemoCircle.s.sol`
+  (`ROUND_DURATION` is env-overridable).
 - ⏳ Record 1–2 min demo video (money shot: close round → near-instant payout next
   to the explorer tx, ideally over the Flashblocks RPC).
-- ⏳ Pitch deck (10 slides) + technical one-pager.
 - Future/pre-mainnet: timelocked `emergencyWithdraw()` for stalled circles;
   swap injected connector for social login; real KRW stablecoin instead of MockKRW.
 
