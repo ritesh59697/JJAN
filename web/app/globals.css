@@ -27,6 +27,14 @@
   --skeleton-1: #eeeeee;
   --skeleton-2: #f5f5f5;
   --ascii: rgba(28, 28, 28, 0.44);
+  /* Veil over the ambient video. Heavier at top and bottom where the densest
+     text sits; lighter through the middle so the texture still reads. */
+  --scrim: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.70) 0%,
+    rgba(255, 255, 255, 0.52) 38%,
+    rgba(255, 255, 255, 0.66) 100%
+  );
   --radius: 16px;
   --radius-sm: 12px;
 }
@@ -61,6 +69,12 @@
   --skeleton-1: #1a1a1d;
   --skeleton-2: #242428;
   --ascii: rgba(242, 242, 243, 0.3);
+  --scrim: linear-gradient(
+    180deg,
+    rgba(12, 12, 13, 0.88) 0%,
+    rgba(12, 12, 13, 0.72) 38%,
+    rgba(12, 12, 13, 0.84) 100%
+  );
 }
 
 * { box-sizing: border-box; }
@@ -87,7 +101,32 @@ a:hover { border-bottom-color: var(--text); }
 /* Small shared components (used instead of emoji / middot glyphs) */
 .sep { display: inline-block; width: 1px; height: 0.9em; background: currentColor; opacity: 0.26; margin: 0 9px; vertical-align: -1px; }
 
-.container { max-width: 940px; margin: 0 auto; padding: 22px 20px 96px; }
+.container { max-width: 940px; margin: 0 auto; padding: 22px 20px 96px; position: relative; z-index: 1; }
+
+/* ---- Ambient video background (landing page only) ----
+   The <video> is a child of <body>, so it paints over the body background and
+   under .container. The source is pre-blurred; the small CSS blur here only
+   softens compression artefacts and hides the upscale. */
+.video-bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+.video-bg-media {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover;
+  /* scale past the edges so the blur doesn't reveal a soft border */
+  transform: scale(1.08);
+  filter: blur(6px) saturate(115%);
+}
+/* The source averages 6% luma — near-black. That reads on a dark page, but on a
+   white one it can only ever be a grey smudge. Inverting flips it to a near-white
+   field with dark topographic lines, which is what belongs on light. */
+:root[data-theme="light"] .video-bg-media {
+  filter: invert(1) blur(6px) contrast(108%);
+}
+/* Theme-aware veil: this is what keeps text readable over the texture. */
+.video-bg-scrim { position: absolute; inset: 0; background: var(--scrim); }
+
+@media (prefers-reduced-motion: reduce) {
+  .video-bg-media { transform: scale(1.02); }
+}
 
 /* ---- Top bar ---- */
 .topbar {

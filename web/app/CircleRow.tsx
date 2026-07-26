@@ -28,14 +28,14 @@ export function CircleRow({ circle, onOpen }: { circle: Address; onOpen: () => v
 
   const loading = !data;
   const members = (data?.[0]?.result as Address[]) ?? [];
-  const contribution = data?.[1]?.result as bigint | undefined;
-  const started = data?.[2]?.result as boolean | undefined;
-  const finished = data?.[3]?.result as boolean | undefined;
-  const round = Number((data?.[4]?.result as bigint | undefined) ?? 0n);
+  const contribution = data?.[1]?.result as bigint | undefined | null;
+  const started = data?.[2]?.result as boolean | undefined | null;
+  const finished = data?.[3]?.result as boolean | undefined | null;
+  const round = Number((data?.[4]?.result as bigint | undefined | null) ?? 0n);
 
   const n = members.length;
-  const pot = contribution !== undefined ? contribution * BigInt(n) : undefined;
-  const recipient = started && !finished ? members[round] : undefined;
+  const pot = contribution !== undefined && contribution !== null ? contribution * BigInt(n) : undefined;
+  const recipient = started === true && finished === false ? members[round] : undefined;
   const me = address?.toLowerCase();
   const isMine = !!me && members.some((m) => m.toLowerCase() === me);
   const myTurn = !!me && !!recipient && recipient.toLowerCase() === me;

@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useAccount } from "wagmi";
 import { TopBar, NotWiredNotice } from "./TopBar";
 import { Landing } from "./Landing";
+import { VideoBackground } from "./VideoBackground";
 
 // `/` is the marketing page only. The app itself lives at /dashboard.
 export default function Home() {
@@ -26,15 +27,20 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="container">
-      <TopBar />
-      {!isConnected && (
-        <p className="tag">
-          Save with friends. The smart contract holds the pot, so no organizer can run off with it. Built on GIWA.
-        </p>
-      )}
-      <NotWiredNotice />
-      <Landing />
-    </div>
+    <>
+      {/* Sibling of .container, not a child, so it sits in the page's base
+          stacking context rather than inside the content layer. */}
+      <VideoBackground />
+      <div className="container">
+        <TopBar />
+        {!isConnected && (
+          <p className="tag">
+            Save with friends. The smart contract holds the pot, so no organizer can run off with it. Built on GIWA.
+          </p>
+        )}
+        <NotWiredNotice />
+        <Landing />
+      </div>
+    </>
   );
 }
