@@ -69,3 +69,27 @@ export function IconArrowUpRight({ size = 14, className }: P) {
     </svg>
   );
 }
+
+export function IconMenu({ size = 18, className }: P) {
+  return (
+    <svg {...base(size)} className={className} fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 6h16M4 12h16M4 18h16" />
+    </svg>
+  );
+}
+
+export function IconClose({ size = 18, className }: P) {
+  return (
+    <svg {...base(size)} className={className} fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M18 6 6 18M6 6l12 12" />
+    </svg>
+  );
+}
+
+export function IconChevronDown({ size = 12, className }: P) {
+  return (
+    <svg {...base(size)} className={className} fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
+      <path d="m6 9 6 6 6-6" />
+    </svg>
+  );
+}

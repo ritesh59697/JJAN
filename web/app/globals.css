@@ -135,7 +135,7 @@ a:hover { border-bottom-color: var(--text); }
   padding: 14px 0; margin-bottom: 4px;
 }
 /* .brand and .navlink are <Link>s, so they opt out of the global underlined-anchor rule. */
-.brand { display: flex; align-items: baseline; gap: 10px; cursor: pointer; border-radius: 8px; border-bottom: 0; }
+.brand { display: flex; align-items: center; gap: 10px; cursor: pointer; border-radius: 8px; border-bottom: 0; }
 .brand:hover { border-bottom: 0; }
 .brand:focus-visible { outline: 2px solid var(--text); outline-offset: 4px; }
 
@@ -320,6 +320,12 @@ button.gold:hover { box-shadow: var(--shadow-go); }
 .hero-badges .b { display: inline-flex; align-items: center; gap: 7px; }
 .hero-cta { display: flex; justify-content: center; }
 
+@property --rot {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
 /* Binary "savings circle" ASCII art — the frontend.supply halftone signature */
 .ascii-hero {
   margin: 10px auto 0; max-width: 100%; overflow: hidden;
@@ -331,8 +337,43 @@ button.gold:hover { box-shadow: var(--shadow-go); }
   margin: 0;
   font-family: ui-monospace, "SF Mono", Menlo, monospace;
   font-size: 10px; line-height: 10px; letter-spacing: 0;
-  color: var(--ascii);
   white-space: pre; user-select: none;
+  
+  /* Fallback text color */
+  color: var(--ascii);
+  
+  /* Modern text gradient rotating themes */
+  background: conic-gradient(
+    from var(--rot) at 50% 50%,
+    var(--ascii) 0%,
+    var(--accent) 25%,
+    var(--ascii) 50%,
+    var(--go) 75%,
+    var(--ascii) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  
+  animation: rotate-gradient 16s linear infinite;
+}
+
+@keyframes rotate-gradient {
+  0% {
+    --rot: 0deg;
+  }
+  100% {
+    --rot: 360deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ascii-hero pre {
+    animation: none;
+    background: none;
+    -webkit-text-fill-color: var(--ascii);
+    color: var(--ascii);
+  }
 }
 @media (max-width: 720px) {
   .ascii-hero pre { font-size: 6px; line-height: 6px; }
@@ -411,3 +452,221 @@ button.gold:hover { box-shadow: var(--shadow-go); }
   .section.closing h2 { font-size: 26px; }
   .stat { gap: 22px; }
 }
+
+/* ---- Mobile Navigation Menu ---- */
+.menu-toggle {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 8px;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+  transition: background 0.2s, border-color 0.2s;
+  cursor: pointer;
+}
+.menu-toggle:hover {
+  background: var(--field);
+  border-color: var(--border-strong);
+  box-shadow: none;
+}
+
+@media (max-width: 768px) {
+  .topnav {
+    display: none;
+  }
+  .menu-toggle {
+    display: inline-flex;
+  }
+}
+
+.mobile-nav-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 16px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.mobile-nav-card {
+  width: 100%;
+  max-width: 480px;
+  background: var(--panel);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  padding: 24px;
+  position: relative;
+  box-shadow: var(--shadow-lg);
+  margin-top: 48px;
+  animation: slideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mobile-nav-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: transparent;
+  border: 0;
+  color: var(--muted);
+  padding: 8px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s, background 0.15s;
+}
+.mobile-nav-close:hover {
+  color: var(--text);
+  background: var(--field);
+}
+
+.mobile-nav-links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.mobile-navlink {
+  font-size: 18px;
+  font-weight: 600;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+  border: 0;
+  transition: color 0.15s, background 0.15s;
+  display: block;
+}
+.mobile-navlink:hover, .mobile-navlink.active {
+  color: var(--text);
+  background: var(--field);
+  border: 0;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-16px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@media (max-width: 500px) {
+  .topbar {
+    padding: 10px 0;
+  }
+  .brand h1 {
+    font-size: 20px;
+  }
+  .brand .ko {
+    font-size: 12px;
+  }
+  .brand .sep {
+    margin: 0 5px;
+  }
+  .topbar-end {
+    gap: 6px;
+  }
+  .topbar-end button, .topbar-end .pill {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+  .theme-switch .theme-opt {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+/* ---- Connected Wallet Dropdown ---- */
+.connect-container {
+  position: relative;
+}
+
+button.wallet-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--go-bg);
+  color: var(--ok);
+  border: 1px solid var(--go-border);
+  border-radius: 999px;
+  padding: 5px 13px;
+  font-size: 12.5px;
+  font-weight: 600;
+  box-shadow: none;
+  cursor: pointer;
+  height: auto;
+  line-height: normal;
+  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+button.wallet-trigger:hover {
+  background: var(--go-bg);
+  border-color: var(--ok);
+  box-shadow: var(--shadow-chip);
+}
+button.wallet-trigger:active {
+  transform: none;
+}
+
+.chevron-icon {
+  transition: transform 0.2s ease;
+  color: var(--ok);
+  opacity: 0.8;
+}
+.chevron-icon.open {
+  transform: rotate(180deg);
+}
+
+.wallet-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 1000;
+  background: var(--panel);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  padding: 6px;
+  box-shadow: var(--shadow-md);
+  min-width: 140px;
+  animation: fadeIn 0.15s ease-out;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+button.disconnect-btn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  background: transparent;
+  border: 0;
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: none;
+  transition: background 0.15s, color 0.15s;
+}
+button.disconnect-btn:hover {
+  background: var(--field);
+  color: var(--accent);
+  box-shadow: none;
+}
+button.disconnect-btn:active {
+  transform: translateY(0.5px);
+}
+
+

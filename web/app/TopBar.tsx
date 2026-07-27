@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAccount, useChainId } from "wagmi";
@@ -7,6 +8,7 @@ import { giwaTestnet } from "@/lib/chain";
 import { NOT_DEPLOYED } from "@/lib/contracts";
 import { Connect } from "./Connect";
 import { ThemeSwitcher } from "./ThemeSwitcher";
+import { IconMenu, IconClose } from "./icons";
 
 // Shared header for both routes. The section nav is homepage-only — on the
 // dashboard those links are just noise, and the brand still links back to `/`.
@@ -17,11 +19,29 @@ export function TopBar() {
   const { isConnected } = useAccount();
   const chainId = useChainId();
   const wrongChain = isConnected && chainId !== giwaTestnet.id;
-  const showNav = pathname === "/" && isConnected && !wrongChain && !NOT_DEPLOYED;
+  const showNav = pathname === "/";
+  const canAccessDashboard = isConnected && !wrongChain && !NOT_DEPLOYED;
+
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  // Close mobile menu on Escape key press
+  useEffect(() => {
+    if (!isMenuOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsMenuOpen(false);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isMenuOpen]);
 
   return (
     <div className="topbar">
       <Link className="brand" href="/">
+        <svg className="logo" width="32" height="32" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style={{ borderRadius: "8px", display: "block" }}>
+          <rect width="100" height="100" rx="24" fill="#0d0d0d"/>
+          <circle cx="50" cy="50" r="27" fill="none" stroke="#ffffff" strokeWidth="10"/>
+          <circle cx="50" cy="23" r="6.5" fill="#12a150"/>
+        </svg>
         <h1>Jjan</h1>
         <span className="ko">
           짠<i className="sep" />on-chain 곗돈
@@ -29,9 +49,11 @@ export function TopBar() {
       </Link>
       {showNav && (
         <nav className="topnav">
-          <Link className="navlink" href="/dashboard">
-            Dashboard
-          </Link>
+          {canAccessDashboard && (
+            <Link className="navlink" href="/dashboard">
+              Dashboard
+            </Link>
+          )}
           <Link className="navlink active" href="/">
             Home
           </Link>
@@ -44,9 +66,45 @@ export function TopBar() {
         </nav>
       )}
       <div className="topbar-end">
+        {showNav && (
+          <button
+            className="menu-toggle"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Toggle menu"
+            aria-expanded={isMenuOpen}
+          >
+            <IconMenu size={16} />
+          </button>
+        )}
         <ThemeSwitcher />
         <Connect />
       </div>
+
+      {showNav && isMenuOpen && (
+        <div className="mobile-nav-overlay" onClick={() => setIsMenuOpen(false)}>
+          <div className="mobile-nav-card" onClick={(e) => e.stopPropagation()}>
+            <button className="mobile-nav-close" onClick={() => setIsMenuOpen(false)} aria-label="Close menu">
+              <IconClose size={18} />
+            </button>
+            <nav className="mobile-nav-links">
+              {canAccessDashboard && (
+                <Link className="mobile-navlink" href="/dashboard" onClick={() => setIsMenuOpen(false)}>
+                  Dashboard
+                </Link>
+              )}
+              <Link className={`mobile-navlink ${pathname === "/" ? "active" : ""}`} href="/" onClick={() => setIsMenuOpen(false)}>
+                Home
+              </Link>
+              <Link className="mobile-navlink" href="/#how" onClick={() => setIsMenuOpen(false)}>
+                How it works
+              </Link>
+              <Link className="mobile-navlink" href="/#faq" onClick={() => setIsMenuOpen(false)}>
+                FAQ
+              </Link>
+            </nav>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
