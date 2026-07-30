@@ -26,7 +26,7 @@ export function TopBar() {
   const showNav = pathname === "/";
   const canAccessDashboard = isConnected && !wrongChain && !NOT_DEPLOYED;
 
-  const { t } = useTranslation();
+  const { language, t } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // Close mobile menu on Escape key press
@@ -116,6 +116,16 @@ export function TopBar() {
                 {t.topBar.docs}
               </a>
             </nav>
+            <div style={{ marginTop: "24px", borderTop: "1px solid var(--border)", paddingTop: "20px", display: "flex", flexDirection: "column", gap: "16px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ fontSize: "14px", color: "var(--muted)", fontWeight: 500 }}>{language === "ko" ? "테마" : "Theme"}</span>
+                <ThemeSwitcher />
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ fontSize: "14px", color: "var(--muted)", fontWeight: 500 }}>{language === "ko" ? "언어" : "Language"}</span>
+                <LanguageSwitcher />
+              </div>
+            </div>
           </div>
         </div>
       )}

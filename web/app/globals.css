@@ -481,6 +481,9 @@ button.gold:hover { box-shadow: var(--shadow-go); }
   .menu-toggle {
     display: inline-flex;
   }
+  .topbar-end .theme-switch {
+    display: none !important;
+  }
 }
 
 .mobile-nav-overlay {
