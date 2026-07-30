@@ -14,7 +14,7 @@ Built on **GIWA** (Upbit/Dunamu's OP Stack L2) because a club of many small, rec
 
 * **🎥 YouTube Demo Video:** https://youtu.be/Ifl9NLPp6L8
 * **📖 GitBook Product Documentation:** https://ritesh5969.gitbook.io/jjan-docs/
-* **⚡ Live MVP Application:** `[Paste your Vercel URL here]`
+* **⚡ Live MVP Application:** `https://jjan-gamma.vercel.app/`
 
 ---
 
