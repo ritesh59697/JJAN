@@ -13,6 +13,7 @@ import { CircleDetail } from "../CircleDetail";
 import { CircleRow } from "../CircleRow";
 import { IconArrowLeft } from "../icons";
 import { useTranslation } from "@/lib/i18n";
+import { Footer } from "../Footer";
 
 export default function Dashboard() {
   const { isConnected, status } = useAccount();
@@ -130,6 +131,7 @@ export default function Dashboard() {
           )}
         </>
       )}
+      <Footer />
     </div>
   );
 }

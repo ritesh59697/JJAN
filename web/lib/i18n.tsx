@@ -138,6 +138,11 @@ export const translations = {
       potCount: "{amount} mKRW pot",
       open: "Open",
       hide: "Hide this circle",
+    },
+    footer: {
+      builtBy: "Built with ♥ by",
+      forProgram: "for the",
+      programName: "GIWA x Upbit Ecosystem Program (GASOK)",
     }
   },
   ko: {
@@ -273,6 +278,11 @@ export const translations = {
       potCount: "총 곗돈 {amount} mKRW",
       open: "보기",
       hide: "곗방 숨기기",
+    },
+    footer: {
+      builtBy: "ritesh5969가 ♥으로 제작",
+      forProgram: "참여 프로젝트: ",
+      programName: "GIWA x Upbit 에코시스템 프로그램 (GASOK)",
     }
   }
 };

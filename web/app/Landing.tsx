@@ -8,6 +8,7 @@ import { InfoSections } from "./InfoSections";
 import { IconBolt, IconArrowRight } from "./icons";
 import { giwaTestnet } from "@/lib/chain";
 import { useTranslation } from "@/lib/i18n";
+import { Footer } from "./Footer";
 
 // Once a wallet is connected the CTAs link straight to /dashboard; otherwise they
 // show the connect button, since the dashboard is useless without a wallet.
@@ -50,16 +51,7 @@ export function Landing() {
         {renderCta()}
       </section>
 
-      <footer className="landing-footer">
-        {giwaTestnet.name} {t.topBar.testnetNotice}<i className="sep" />
-        <a href="https://ritesh5969.gitbook.io/jjan-docs/" target="_blank" rel="noreferrer">
-          {t.topBar.docs}
-        </a>
-        <i className="sep" />
-        <a href={giwaTestnet.blockExplorers.default.url} target="_blank" rel="noreferrer">
-          Explorer
-        </a>
-      </footer>
+      <Footer />
     </>
   );
 }
