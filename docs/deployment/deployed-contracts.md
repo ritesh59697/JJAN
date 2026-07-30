@@ -14,17 +14,30 @@ Click any address to read the verified source on the explorer.
 
 Deployer: `0xA273683BE2B645a174164C01c71f2d035c39E7EC`
 
-## Live demo circle
+## Live demo circles
 
-A seeded 3-member circle showing a completed payout, for anyone who wants to
-inspect a real round rather than take our word for it:
+Two circles you can inspect on the explorer, rather than taking our word for it.
+Both have run to completion.
+
+### Three-member circle
+
+[`0x23b3B64C57E721D1f21Dcb429e7d709A9732A108`](https://sepolia-explorer.giwa.io/address/0x23b3B64C57E721D1f21Dcb429e7d709A9732A108)
 
 | | |
 | --- | --- |
-| **Circle** | [`0x23b3B64C57E721D1f21Dcb429e7d709A9732A108`](https://sepolia-explorer.giwa.io/address/0x23b3B64C57E721D1f21Dcb429e7d709A9732A108) |
 | Terms | 100,000 mKRW per round · 50,000 mKRW bond · 60s rounds · 3 rounds |
-| Round 1 | closed — 300,000 mKRW paid to `0xA273…E7EC` ([tx](https://sepolia-explorer.giwa.io/tx/0xbaa35cd44cae0c4a7680457168170787a3fb6677b8fcbcfb94ac85cefad04caf)) |
-| Round 2 | fully funded, awaiting `closeRound()` |
+| Status | Finished — all three rounds closed, each member received the pot exactly once |
+| Round 1 | 300,000 mKRW paid to `0xA273…E7EC` ([tx](https://sepolia-explorer.giwa.io/tx/0xbaa35cd44cae0c4a7680457168170787a3fb6677b8fcbcfb94ac85cefad04caf)) |
+| Balance today | 50,000 mKRW — one member's bond, not yet withdrawn. `obligations()` returns exactly this figure, so the solvency invariant is observably true on-chain, not just in tests. |
+
+### Two-member circle (the one in the demo video)
+
+[`0x4a63320923cc0395bb9E3FC9b319C64854676724`](https://sepolia-explorer.giwa.io/address/0x4a63320923cc0395bb9E3FC9b319C64854676724)
+
+| | |
+| --- | --- |
+| Terms | 100,000 mKRW per round · 50,000 mKRW bond · 60s rounds · 2 rounds |
+| Status | Finished and fully settled — both payouts made, both bonds withdrawn, token balance `0` |
 
 {% hint style="success" %}
 Every address above shows a green **Verified** contract on the explorer — the exact

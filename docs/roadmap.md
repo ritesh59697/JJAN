@@ -46,6 +46,7 @@ the [custody guarantee](technical/security-model.md).
 | Payout order is fixed, not randomized | Add VRF ordering (see roadmap: Then) |
 | A stalled circle has no early exit | Add timelocked `emergencyWithdraw()` (see roadmap: Next) |
 | Onboarding via injected wallet | Swap the connector for social login — the app is connector-agnostic |
+| The bond need not cover a full contribution. Slashing is capped at `min(bond, contribution)`, so a member who takes their payout and then stops paying forfeits their bond but can still leave later rounds short. The circle stays solvent and correct; it just does not make the others whole. | Size the bond at or above one contribution, or hold a multi-round bond. Reinforced by the missed-round insurance pool (see roadmap: Next) and by the portable reputation score, which makes defection costly across circles. |
 
 ## Get involved
 
