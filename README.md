@@ -10,15 +10,15 @@ Built on **GIWA** (Upbit/Dunamu's OP Stack L2) because a club of many small, rec
 
 ---
 
-## 🚀 Live Resources
+## Live Resources
 
-* **🎥 YouTube Demo Video:** https://youtu.be/Ifl9NLPp6L8
-* **📖 GitBook Product Documentation:** https://ritesh5969.gitbook.io/jjan-docs/
-* **⚡ Live MVP Application:** https://jjan-gamma.vercel.app/
+* **YouTube Demo Video:** https://youtu.be/Ifl9NLPp6L8
+* **GitBook Product Documentation:** https://ritesh5969.gitbook.io/jjan-docs/
+* **Live MVP Application:** https://jjan-gamma.vercel.app/
 
 ---
 
-## 🛠️ Deployed Contracts (GIWA Sepolia testnet)
+## Deployed Contracts (GIWA Sepolia testnet)
 
 All contracts are verified on the block explorer:
 
@@ -31,16 +31,17 @@ All contracts are verified on the block explorer:
 
 ---
 
-## 🔒 Security Properties (Foundry Tested)
+## Security Properties (Foundry Tested)
 
 - **No Custodial Drain:** Funds leave the contract only via `closeRound` (to the round's fixed recipient) or `withdrawBond` (to the member). There is no owner/admin transfer path.
 - **Solvency Invariant:** `balanceOf(circle) >= obligations()` (i.e. `totalBonds + escrowedPot`) is strictly maintained across 128,000 randomized state-machine call sequences via Foundry handler-driven invariant tests.
 - **Reentrancy Prevention:** Every fund-moving function uses `nonReentrant` modifiers and follows the checks-effects-interactions pattern with pull-payments for bond withdrawals.
+- **No-Show Slashing:** A member who fails to contribute is slashed up to their contribution amount from their bond, keeping the circle solvent without halting round transitions.
 - **Input Hardening:** Initialize checks reject duplicate member addresses, zero addresses, and configurations with fewer than 2 participants.
 
 ---
 
-## 💻 Development & Testing
+## Development & Testing
 
 Built with Foundry and Next.js.
 
@@ -65,7 +66,7 @@ npm run dev   # launches local dev server at http://localhost:3005
 
 ---
 
-## 🏆 GASOK Submission Details
+## GASOK Submission Details
 
 * **Project:** Jjan (짠)
 * **Accelerator:** GASOK (GIWA × Upbit) MVP Build Phase
