@@ -101,7 +101,7 @@ a:hover { border-bottom-color: var(--text); }
 /* Small shared components (used instead of emoji / middot glyphs) */
 .sep { display: inline-block; width: 1px; height: 0.9em; background: currentColor; opacity: 0.26; margin: 0 9px; vertical-align: -1px; }
 
-.container { max-width: 940px; margin: 0 auto; padding: 22px 20px 96px; position: relative; z-index: 1; }
+.container { max-width: 1160px; margin: 0 auto; padding: 22px 20px 96px; position: relative; z-index: 1; }
 
 /* ---- Ambient video background (landing page only) ----
    The <video> is a child of <body>, so it paints over the body background and
@@ -139,14 +139,15 @@ a:hover { border-bottom-color: var(--text); }
 .brand:hover { border-bottom: 0; }
 .brand:focus-visible { outline: 2px solid var(--text); outline-offset: 4px; }
 
-.topbar-end { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.topbar-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-left: auto; justify-content: flex-end; }
+.topbar-end { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 
 .topnav { display: flex; align-items: center; gap: 2px; }
 .navlink {
   display: inline-flex; align-items: center;
   background: transparent; border: 0; box-shadow: none; cursor: pointer;
   color: var(--muted); font-size: 13.5px; font-weight: 500;
-  padding: 7px 13px; border-radius: 999px;
+  padding: 6px 10px; border-radius: 999px;
   transition: color .2s ease, background .2s ease;
 }
 .navlink:hover { color: var(--text); background: var(--field); box-shadow: none; }

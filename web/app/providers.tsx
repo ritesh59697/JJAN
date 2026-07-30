@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "next-themes";
 import { config } from "@/lib/wagmi";
 import { useState, type ReactNode } from "react";
+import { LanguageProvider } from "@/lib/i18n";
 
 export function Providers({ children }: { children: ReactNode }) {
   const [queryClient] = useState(() => new QueryClient());
@@ -17,7 +18,11 @@ export function Providers({ children }: { children: ReactNode }) {
       disableTransitionOnChange
     >
       <WagmiProvider config={config}>
-        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+        <QueryClientProvider client={queryClient}>
+          <LanguageProvider>
+            {children}
+          </LanguageProvider>
+        </QueryClientProvider>
       </WagmiProvider>
     </ThemeProvider>
   );

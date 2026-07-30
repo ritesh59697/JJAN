@@ -33,11 +33,6 @@ export default function Home() {
       <VideoBackground />
       <div className="container">
         <TopBar />
-        {!isConnected && (
-          <p className="tag">
-            Save with friends. The smart contract holds the pot, so no organizer can run off with it. Built on GIWA.
-          </p>
-        )}
         <NotWiredNotice />
         <Landing />
       </div>

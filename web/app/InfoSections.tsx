@@ -1,60 +1,57 @@
-// Informational sections (How it works / Why trustless / FAQ) shared by the
-// disconnected landing and the connected "How it works" / "FAQ" nav views.
+"use client";
 
-const steps = [
-  {
-    n: "01",
-    title: "Everyone contributes",
-    body: "Members pay a fixed amount into the circle each round, in mKRW.",
-  },
-  {
-    n: "02",
-    title: "The pot rotates",
-    body: "One member is paid the full pot per round, in a fixed, pre-agreed order.",
-  },
-  {
-    n: "03",
-    title: "The contract enforces it",
-    body: "No organizer holds the money. No admin key can drain it. Ever.",
-  },
-];
-
-const faqs = [
-  {
-    q: "What is a kye (곗돈)?",
-    a: "A rotating savings circle popular in Korea: a group of friends each contribute a fixed amount every round, and the whole pot is paid out to one member per round until everyone has had a turn. Traditionally organized over KakaoTalk on trust alone.",
-  },
-  {
-    q: "Who actually holds the money?",
-    a: "The smart contract does. Every contribution is escrowed on-chain and released only to the round's pre-scheduled recipient. There is no organizer wallet in the middle.",
-  },
-  {
-    q: "Can the organizer run off with the pot?",
-    a: "No. There is no admin key, no owner withdrawal, and no arbitrary-transfer function anywhere in the contract. Funds can only leave a circle to the round's fixed recipient, or back to a member as their bond. Removing that rug vector is the entire point of Jjan.",
-  },
-  {
-    q: "What keeps members from skipping a payment?",
-    a: "Each member posts a bond when they join. The payout order and recipients are fixed at creation and can't be changed, so nobody can jump the queue or redirect a payout.",
-  },
-  {
-    q: "Is this real money?",
-    a: "Not yet. Jjan runs on the GIWA Sepolia testnet using mKRW, a mock KRW stablecoin with an open faucet. It's for demonstrating the trustless mechanics; no real funds are involved.",
-  },
-  {
-    q: "Which network is it on, and how fast?",
-    a: "GIWA Sepolia, an Upbit/Dunamu OP-Stack L2 with ~1s blocks (and ~200ms flashblock preconfirmations). Closing a round pays out the recipient almost instantly.",
-  },
-  {
-    q: "Is the code open and verified?",
-    a: "Yes. The contracts are open-source, covered by unit, fuzz, and a solvency invariant test, and verified on the GIWA block explorer.",
-  },
-];
+import { useTranslation } from "@/lib/i18n";
 
 export function InfoSections() {
+  const { t } = useTranslation();
+
+  const steps = [
+    {
+      n: "01",
+      title: t.info.createTitle,
+      body: t.info.createDesc,
+    },
+    {
+      n: "02",
+      title: t.info.joinTitle,
+      body: t.info.joinDesc,
+    },
+    {
+      n: "03",
+      title: t.info.contributeTitle,
+      body: t.info.contributeDesc,
+    },
+    {
+      n: "04",
+      title: t.info.rotateTitle,
+      body: t.info.rotateDesc,
+    },
+  ];
+
+  const faqs = [
+    {
+      q: t.info.q1,
+      a: t.info.a1,
+    },
+    {
+      q: t.info.q2,
+      a: t.info.a2,
+    },
+    {
+      q: t.info.q3,
+      a: t.info.a3,
+    },
+    {
+      q: t.info.q4,
+      a: t.info.a4,
+    },
+  ];
+
   return (
     <>
       <section className="section" id="how">
-        <p className="eyebrow">How it works</p>
+        <p className="eyebrow">{t.topBar.howItWorks}</p>
+        <p className="section-lead">{t.info.howItWorksSub}</p>
         <div className="steps">
           {steps.map((s) => (
             <div className="step" key={s.n}>
@@ -67,12 +64,8 @@ export function InfoSections() {
       </section>
 
       <section className="section">
-        <p className="eyebrow">Why trustless</p>
-        <p className="section-lead">
-          Kye circles traditionally run on trust via KakaoTalk, and organizers regularly abscond with the
-          pot. Jjan removes the trust: escrow and payout are enforced by code, not a promise.
-        </p>
-        <div className="stat">
+        <p className="eyebrow">{t.info.trustlessTitle}</p>
+        <div className="stat" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "20px" }}>
           <div>
             <div className="n">0</div>
             <div className="l">admin drain paths</div>
@@ -87,26 +80,28 @@ export function InfoSections() {
           </div>
         </div>
 
-        <div className="callout">
-          <blockquote>
-            The contract is the organizer. It can hold the pot and pay the scheduled member, and that
-            is <em>all</em> it can do. There is no function, anywhere, that lets anyone take the money.
-          </blockquote>
+        <div className="callout" style={{ marginTop: "30px" }}>
+          <ul style={{ paddingLeft: "20px", display: "flex", flexDirection: "column", gap: "10px", margin: 0 }}>
+            <li>{t.info.trustlessItem1}</li>
+            <li>{t.info.trustlessItem2}</li>
+            <li>{t.info.trustlessItem3}</li>
+            <li>{t.info.trustlessItem4}</li>
+          </ul>
         </div>
       </section>
 
       <section className="section faq" id="faq">
         <h2 className="dual">
-          <span className="faint">Questions.</span> Answered.
+          <span className="faint">{t.info.faqTitle.split(" ")[0]}</span> {t.info.faqTitle.split(" ").slice(1).join(" ")}
         </h2>
         <div className="faq-list">
           {faqs.map((f) => (
             <details key={f.q}>
-              <summary>
-                {f.q}
-                <span className="chev" aria-hidden="true">+</span>
+              <summary style={{ display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer" }}>
+                <span style={{ paddingRight: "16px" }}>{f.q}</span>
+                <span className="chev" aria-hidden="true" style={{ flexShrink: 0 }}>+</span>
               </summary>
-              <p>{f.a}</p>
+              <p style={{ marginTop: "10px", lineHeight: "1.6", color: "var(--muted)" }}>{f.a}</p>
             </details>
           ))}
         </div>

@@ -8,7 +8,11 @@ import { giwaTestnet } from "@/lib/chain";
 import { NOT_DEPLOYED } from "@/lib/contracts";
 import { Connect } from "./Connect";
 import { ThemeSwitcher } from "./ThemeSwitcher";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 import { IconMenu, IconClose } from "./icons";
+import { useTranslation } from "@/lib/i18n";
+
+const DOCS_URL = "https://ritesh5969.gitbook.io/jjan-docs/";
 
 // Shared header for both routes. The section nav is homepage-only — on the
 // dashboard those links are just noise, and the brand still links back to `/`.
@@ -22,6 +26,7 @@ export function TopBar() {
   const showNav = pathname === "/";
   const canAccessDashboard = isConnected && !wrongChain && !NOT_DEPLOYED;
 
+  const { t } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // Close mobile menu on Escape key press
@@ -44,40 +49,46 @@ export function TopBar() {
         </svg>
         <h1>Jjan</h1>
         <span className="ko">
-          짠<i className="sep" />on-chain 곗돈
+          짠<i className="sep" />{t.topBar.logoText}
         </span>
       </Link>
       {showNav && (
-        <nav className="topnav">
+        <nav className="topnav" style={{ marginLeft: "24px" }}>
           {canAccessDashboard && (
             <Link className="navlink" href="/dashboard">
-              Dashboard
+              {t.topBar.dashboard}
             </Link>
           )}
           <Link className="navlink active" href="/">
-            Home
+            {t.topBar.home}
           </Link>
           <Link className="navlink" href="/#how">
-            How it works
+            {t.topBar.howItWorks}
           </Link>
           <Link className="navlink" href="/#faq">
-            FAQ
+            {t.topBar.faq}
           </Link>
+          <a className="navlink" href={DOCS_URL} target="_blank" rel="noreferrer">
+            {t.topBar.docs}
+          </a>
         </nav>
       )}
-      <div className="topbar-end">
-        {showNav && (
-          <button
-            className="menu-toggle"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label="Toggle menu"
-            aria-expanded={isMenuOpen}
-          >
-            <IconMenu size={16} />
-          </button>
-        )}
-        <ThemeSwitcher />
-        <Connect />
+      <div className="topbar-right">
+        <div className="topbar-end">
+          {showNav && (
+            <button
+              className="menu-toggle"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-label="Toggle menu"
+              aria-expanded={isMenuOpen}
+            >
+              <IconMenu size={16} />
+            </button>
+          )}
+          <ThemeSwitcher />
+          <LanguageSwitcher />
+          <Connect />
+        </div>
       </div>
 
       {showNav && isMenuOpen && (
@@ -89,18 +100,21 @@ export function TopBar() {
             <nav className="mobile-nav-links">
               {canAccessDashboard && (
                 <Link className="mobile-navlink" href="/dashboard" onClick={() => setIsMenuOpen(false)}>
-                  Dashboard
+                  {t.topBar.dashboard}
                 </Link>
               )}
               <Link className={`mobile-navlink ${pathname === "/" ? "active" : ""}`} href="/" onClick={() => setIsMenuOpen(false)}>
-                Home
+                {t.topBar.home}
               </Link>
               <Link className="mobile-navlink" href="/#how" onClick={() => setIsMenuOpen(false)}>
-                How it works
+                {t.topBar.howItWorks}
               </Link>
               <Link className="mobile-navlink" href="/#faq" onClick={() => setIsMenuOpen(false)}>
-                FAQ
+                {t.topBar.faq}
               </Link>
+              <a className="mobile-navlink" href={DOCS_URL} target="_blank" rel="noreferrer" onClick={() => setIsMenuOpen(false)}>
+                {t.topBar.docs}
+              </a>
             </nav>
           </div>
         </div>
@@ -111,15 +125,13 @@ export function TopBar() {
 
 // Shown on both routes when the contract addresses haven't been configured.
 export function NotWiredNotice() {
+  const { t } = useTranslation();
   if (!NOT_DEPLOYED) return null;
   return (
     <div className="card">
-      <h2>Contracts not wired yet</h2>
+      <h2>{t.topBar.notWiredTitle}</h2>
       <p className="sub">
-        Deploy with <span className="mono">forge script script/Deploy.s.sol</span>, then set{" "}
-        <span className="mono">NEXT_PUBLIC_FACTORY</span>, <span className="mono">NEXT_PUBLIC_MKRW</span> and{" "}
-        <span className="mono">NEXT_PUBLIC_REPUTATION</span> in <span className="mono">web/.env.local</span>. The UI is
-        fully wired and will light up once those are set.
+        {t.topBar.notWiredDesc}
       </p>
     </div>
   );

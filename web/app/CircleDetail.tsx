@@ -6,6 +6,7 @@ import { formatUnits, type Address } from "viem";
 import { abis, addresses } from "@/lib/contracts";
 import { TxLink } from "./TxLink";
 import { IconCheck } from "./icons";
+import { useTranslation } from "@/lib/i18n";
 
 function short(a: string) {
   return `${a.slice(0, 6)}…${a.slice(-4)}`;
@@ -35,15 +36,48 @@ function RoundNode({
     functionName: "isMember",
     args: [member],
   });
+  const { t } = useTranslation();
 
   return (
     <div className={`round-node ${isCurrent ? "current" : ""} ${isDone ? "done" : ""}`}>
       <div className="r" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <span>Round {index + 1} recipient</span>
+        <span>{t.detail.roundRecipient.replace("{num}", String(index + 1))}</span>
         {!started && (
-          <span style={{ fontSize: "0.85em", color: joined ? "#10b981" : "#ef4444", fontWeight: "bold" }}>
-            {joined ? "✓ Joined" : "⏳ Not joined"}
-          </span>
+          joined ? (
+            <span style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "4px",
+              fontSize: "11px",
+              color: "var(--ok)",
+              backgroundColor: "var(--go-bg)",
+              border: "1px solid var(--go-border)",
+              padding: "2px 8px",
+              borderRadius: "999px",
+              fontWeight: 600
+            }}>
+              <IconCheck size={10} /> {t.detail.statusJoined}
+            </span>
+          ) : (
+            <span style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "4px",
+              fontSize: "11px",
+              color: "var(--accent)",
+              backgroundColor: "rgba(229, 72, 77, 0.06)",
+              border: "1px solid rgba(229, 72, 77, 0.22)",
+              padding: "2px 8px",
+              borderRadius: "999px",
+              fontWeight: 600
+            }}>
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ display: "block", flex: "none" }}>
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>
+              {t.detail.statusNotJoined}
+            </span>
+          )
         )}
       </div>
       <div className="who mono">
@@ -57,9 +91,38 @@ function RoundNode({
 export function CircleDetail({ circle }: { circle: Address }) {
   const { address } = useAccount();
   const base = { address: circle, abi: abis.circle as any } as const;
+  const { t } = useTranslation();
 
   const [warning, setWarning] = useState<string | null>(null);
   const [now, setNow] = useState<number>(Math.floor(Date.now() / 1000));
+
+  const [localName, setLocalName] = useState<string>("");
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [nameInput, setNameInput] = useState("");
+
+  useEffect(() => {
+    const loadName = () => {
+      const stored = localStorage.getItem(`jjan_circle_name_${circle.toLowerCase()}`);
+      setLocalName(stored || "");
+      setNameInput(stored || "");
+    };
+    loadName();
+    window.addEventListener("jjan_name_update", loadName);
+    return () => window.removeEventListener("jjan_name_update", loadName);
+  }, [circle]);
+
+  const saveName = () => {
+    const trimmed = nameInput.trim();
+    if (trimmed) {
+      localStorage.setItem(`jjan_circle_name_${circle.toLowerCase()}`, trimmed);
+      setLocalName(trimmed);
+    } else {
+      localStorage.removeItem(`jjan_circle_name_${circle.toLowerCase()}`);
+      setLocalName("");
+    }
+    setIsEditingName(false);
+    window.dispatchEvent(new Event("jjan_name_update"));
+  };
 
   const { data, refetch } = useReadContracts({
     contracts: [
@@ -141,7 +204,7 @@ export function CircleDetail({ circle }: { circle: Address }) {
   });
 
   const { writeContract, data: hash, isPending } = useWriteContract();
-  const { isLoading: mining } = useWaitForTransactionReceipt({
+  const { isLoading: mining, isSuccess } = useWaitForTransactionReceipt({
     hash,
     query: { enabled: !!hash },
   });
@@ -149,14 +212,19 @@ export function CircleDetail({ circle }: { circle: Address }) {
 
   // Refetch when transactions complete
   useEffect(() => {
-    if (hash && !mining) {
-      refetch();
-      refetchIsMember();
-      refetchAllowance();
-      refetchPaid();
-      refetchMyBond();
+    if (isSuccess) {
+      const doRefetch = () => {
+        refetch();
+        refetchIsMember();
+        refetchAllowance();
+        refetchPaid();
+        refetchMyBond();
+      };
+      doRefetch();
+      const t = setTimeout(doRefetch, 1000);
+      return () => clearTimeout(t);
     }
-  }, [hash, mining, refetch, refetchIsMember, refetchAllowance, refetchPaid, refetchMyBond]);
+  }, [isSuccess, refetch, refetchIsMember, refetchAllowance, refetchPaid, refetchMyBond]);
 
   useEffect(() => {
     setWarning(null);
@@ -178,21 +246,59 @@ export function CircleDetail({ circle }: { circle: Address }) {
     });
   };
 
-  const status = finished ? "Finished" : started ? `Round ${currentRound + 1} of ${members.length}` : "Waiting for members";
+  const status = finished
+    ? t.detail.finished
+    : started
+    ? t.detail.roundOf.replace("{current}", String(currentRound + 1)).replace("{total}", String(members.length))
+    : t.detail.waitingMembers;
 
   return (
     <div className="card">
-      <div className="row" style={{ justifyContent: "space-between" }}>
-        <h2>Circle {short(circle)}</h2>
-        <span className={`pill ${started && !finished ? "ok" : ""}`}>{status}</span>
+      <div className="row" style={{ justifyContent: "space-between", alignItems: "flex-start" }}>
+        <div style={{ flex: 1 }}>
+          {isEditingName ? (
+            <div style={{ display: "flex", gap: "8px", alignItems: "center", marginTop: "4px", marginBottom: "8px" }}>
+              <input
+                type="text"
+                value={nameInput}
+                onChange={(e) => setNameInput(e.target.value)}
+                placeholder={t.detail.renamePlaceholder}
+                style={{ fontSize: "16px", padding: "6px 12px", width: "auto", maxWidth: "240px" }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") saveName();
+                  if (e.key === "Escape") {
+                    setNameInput(localName);
+                    setIsEditingName(false);
+                  }
+                }}
+                autoFocus
+              />
+              <button onClick={saveName} className="chip-btn" style={{ padding: "6px 12px" }}>{t.detail.saveBtn}</button>
+              <button onClick={() => { setNameInput(localName); setIsEditingName(false); }} className="chip-btn ghost" style={{ padding: "6px 12px" }}>{t.detail.cancelBtn}</button>
+            </div>
+          ) : (
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+              <h2 style={{ margin: 0 }}>{localName || `Circle ${short(circle)}`}</h2>
+              <button
+                onClick={() => setIsEditingName(true)}
+                className="chip-btn"
+                style={{ padding: "2px 8px", fontSize: "11px", height: "auto" }}
+              >
+                {t.detail.renameBtn}
+              </button>
+            </div>
+          )}
+          {localName && <p className="sub mono" style={{ margin: "4px 0 0" }}>{circle}</p>}
+        </div>
+        <span className={`pill ${started && !finished ? "ok" : ""}`} style={{ flexShrink: 0 }}>{status}</span>
       </div>
-      <p className="sub mono">{circle}</p>
+      {!localName && <p className="sub mono" style={{ margin: "4px 0 12px" }}>{circle}</p>}
 
       <div className="stat">
-        <div><div className="n">{fmt(contribution)}</div><div className="l">mKRW / round</div></div>
-        <div><div className="n">{members.length}</div><div className="l">members</div></div>
-        <div><div className="n">{fmt(bond)}</div><div className="l">bond</div></div>
-        <div><div className="n">{fmt(contribution !== undefined && contribution !== null ? contribution * BigInt(members.length) : undefined)}</div><div className="l">pot / round</div></div>
+        <div><div className="n">{fmt(contribution)}</div><div className="l">{t.detail.mkrwRound}</div></div>
+        <div><div className="n">{members.length}</div><div className="l">{t.detail.members}</div></div>
+        <div><div className="n">{fmt(bond)}</div><div className="l">{t.detail.bond}</div></div>
+        <div><div className="n">{fmt(contribution !== undefined && contribution !== null ? contribution * BigInt(members.length) : undefined)}</div><div className="l">{t.detail.potRound}</div></div>
       </div>
 
       <div className="round-track">
@@ -220,17 +326,17 @@ export function CircleDetail({ circle }: { circle: Address }) {
         {!started && isMemberOfCircle === false && (
           <>
             {!hasAllowance ? (
-              <button onClick={approveAndJoin} disabled={busy}>1. Approve mKRW</button>
+              <button onClick={approveAndJoin} disabled={busy}>{t.detail.approveBtn}</button>
             ) : (
               <button disabled className="ghost" style={{ cursor: "default" }}>
-                <IconCheck size={12} /> mKRW Approved
+                <IconCheck size={12} /> {t.detail.approvedBtn}
               </button>
             )}
             <button
               className={hasAllowance ? "" : "ghost"}
               onClick={() => {
                 if (!hasAllowance) {
-                  setWarning("Allowance insufficient. You must click '1. Approve mKRW' and confirm the approval transaction first.");
+                  setWarning(t.detail.warningAllowance);
                   return;
                 }
                 setWarning(null);
@@ -238,7 +344,7 @@ export function CircleDetail({ circle }: { circle: Address }) {
               }}
               disabled={busy}
             >
-              2. Join
+              {t.detail.joinBtn}
             </button>
           </>
         )}
@@ -247,7 +353,7 @@ export function CircleDetail({ circle }: { circle: Address }) {
             className="gold"
             onClick={() => {
               if (!allJoined) {
-                setWarning("Cannot start circle until all invited members have joined and deposited their bonds.");
+                setWarning(t.detail.warningJoinedAll);
                 return;
               }
               setWarning(null);
@@ -255,19 +361,19 @@ export function CircleDetail({ circle }: { circle: Address }) {
             }}
             disabled={busy || !allJoined}
           >
-            {allJoined ? "Start circle" : `Start circle (${joinedCount}/${members.length} joined)`}
+            {allJoined ? t.detail.startCircle : t.detail.startCircleStatus.replace("{joined}", String(joinedCount)).replace("{total}", String(members.length))}
           </button>
         )}
         {started && !finished && (
           <>
             <button onClick={() => tx("contribute")} disabled={busy || paidThisRound === true}>
-              {paidThisRound ? (<><IconCheck /> Contributed</>) : "Contribute this round"}
+              {paidThisRound ? (<><IconCheck /> {t.detail.contributedBtn}</>) : t.detail.contributeBtn}
             </button>
             <button
               className="gold"
               onClick={() => {
                 if (!canClose) {
-                  setWarning(`Round is not over yet. Please wait ${formatTime(timeLeft)} before closing.`);
+                  setWarning(t.detail.warningRoundNotOver.replace("{time}", formatTime(timeLeft)));
                   return;
                 }
                 setWarning(null);
@@ -275,7 +381,7 @@ export function CircleDetail({ circle }: { circle: Address }) {
               }}
               disabled={busy || !canClose}
             >
-              {canClose ? "Close round, pay out" : `Close round (${formatTime(timeLeft)})`}
+              {canClose ? t.detail.closeRoundPay : t.detail.closeRoundTimer.replace("{time}", formatTime(timeLeft))}
             </button>
           </>
         )}
@@ -284,16 +390,15 @@ export function CircleDetail({ circle }: { circle: Address }) {
             onClick={() => tx("withdrawBond")}
             disabled={busy || myBond === undefined || myBond === null || myBond === 0n}
           >
-            {myBond === 0n ? (<><IconCheck /> Bond claimed</>) : "Withdraw bond"}
+            {myBond === 0n ? (<><IconCheck /> {t.detail.bondClaimed}</>) : t.detail.withdrawBond}
           </button>
         )}
-        {busy && <span className="pill">Working…</span>}
+        {busy && <span className="pill">{t.detail.working}</span>}
         <TxLink hash={hash} />
       </div>
 
       <p className="notice">
-        Payout goes to the round&apos;s scheduled member automatically. There is no function anywhere
-        that lets the organizer take the pot.
+        {t.detail.nonCustodialNotice}
       </p>
     </div>
   );

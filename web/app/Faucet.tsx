@@ -4,11 +4,13 @@ import { useAccount, useReadContract, useWriteContract, useWaitForTransactionRec
 import { formatUnits, parseUnits } from "viem";
 import { abis, addresses } from "@/lib/contracts";
 import { TxLink } from "./TxLink";
+import { useTranslation } from "@/lib/i18n";
 
 const fmt = (v?: bigint) => (v === undefined ? "-" : Number(formatUnits(v, 18)).toLocaleString());
 
 export function Faucet() {
   const { address } = useAccount();
+  const { t } = useTranslation();
 
   const { data: eth, isLoading: ethLoading } = useBalance({ address, query: { enabled: !!address } });
   const { data: mkrw, refetch, isLoading: mkrwLoading } = useReadContract({
@@ -39,19 +41,19 @@ export function Faucet() {
             {mkrwLoading ? <span className="skeleton" style={{ width: 92, height: 18 }} /> : fmt(mkrw as bigint | undefined)}{" "}
             <span style={{ color: "var(--muted)", fontSize: 13, fontWeight: 400 }}>mKRW</span>
           </div>
-          <div className="mono" style={{ fontSize: 11, color: "var(--muted)" }}>test stablecoin balance</div>
+          <div className="mono" style={{ fontSize: 11, color: "var(--muted)" }}>{t.faucet.stablecoinBalance}</div>
         </div>
         <div>
           <div style={{ fontSize: 20, fontWeight: 700 }}>
             {ethLoading ? <span className="skeleton" style={{ width: 56, height: 18 }} /> : eth ? Number(eth.formatted).toFixed(4) : "-"}{" "}
             <span style={{ color: "var(--muted)", fontSize: 13, fontWeight: 400 }}>ETH</span>
           </div>
-          <div className="mono" style={{ fontSize: 11, color: "var(--muted)" }}>for gas</div>
+          <div className="mono" style={{ fontSize: 11, color: "var(--muted)" }}>{t.faucet.forGas}</div>
         </div>
       </div>
       <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6 }}>
         <button className="gold" onClick={mint} disabled={isPending || mining}>
-          {isPending ? "Confirm in wallet…" : mining ? "Minting…" : "Get 1,000,000 test mKRW"}
+          {isPending ? t.faucet.confirmWallet : mining ? t.faucet.minting : t.faucet.getTestTokens}
         </button>
         <TxLink hash={hash} />
       </div>

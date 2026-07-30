@@ -7,16 +7,18 @@ import { AsciiHero } from "./AsciiHero";
 import { InfoSections } from "./InfoSections";
 import { IconBolt, IconArrowRight } from "./icons";
 import { giwaTestnet } from "@/lib/chain";
+import { useTranslation } from "@/lib/i18n";
 
 // Once a wallet is connected the CTAs link straight to /dashboard; otherwise they
 // show the connect button, since the dashboard is useless without a wallet.
 export function Landing() {
   const { isConnected } = useAccount();
+  const { t } = useTranslation();
 
   const renderCta = () =>
     isConnected ? (
       <Link className="btn-link" href="/dashboard">
-        Open dashboard <IconArrowRight />
+        {t.landing.openDashboard} <IconArrowRight />
       </Link>
     ) : (
       <Connect />
@@ -26,17 +28,16 @@ export function Landing() {
     <>
       <section className="hero">
         <h1>
-          <span className="faint">Save with friends.</span>
+          <span className="faint">{t.landing.heroTitleFaint}</span>
           <br />
-          No one runs off with it.
+          {t.landing.heroTitleStrong}
         </h1>
         <p className="lead">
-          A trustless, on-chain <span className="ko">곗돈</span>. Rotating savings circles where the smart
-          contract holds the pot, not an organizer who could run off with it.
+          {t.landing.lead}
         </p>
         <div className="hero-badges">
-          <span className="b">Non-custodial by design</span>
-          <span className="b"><IconBolt /> ~1s payouts on GIWA</span>
+          <span className="b">{t.landing.badgeCustody}</span>
+          <span className="b"><IconBolt /> {t.landing.badgeSpeed}</span>
         </div>
         <div className="hero-cta">{renderCta()}</div>
         <AsciiHero />
@@ -45,12 +46,16 @@ export function Landing() {
       <InfoSections />
 
       <section className="section closing">
-        <h2>Start a circle with people you trust. Let the contract handle the rest.</h2>
+        <h2>{t.landing.closingTitle}</h2>
         {renderCta()}
       </section>
 
       <footer className="landing-footer">
-        {giwaTestnet.name} testnet<i className="sep" />mock KRW, not real funds<i className="sep" />
+        {giwaTestnet.name} {t.topBar.testnetNotice}<i className="sep" />
+        <a href="https://ritesh5969.gitbook.io/jjan-docs/" target="_blank" rel="noreferrer">
+          {t.topBar.docs}
+        </a>
+        <i className="sep" />
         <a href={giwaTestnet.blockExplorers.default.url} target="_blank" rel="noreferrer">
           Explorer
         </a>
