@@ -2,6 +2,8 @@ cache/
 out/
 broadcast/
 .env
+.env.local
+.env.*.local
 .DS_Store
 
 # node
