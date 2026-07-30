@@ -25,7 +25,7 @@ export function Footer() {
           ritesh5969
         </a>{" "}
         {t.footer.forProgram}{" "}
-        <a href="https://giwa.io" target="_blank" rel="noreferrer" style={{ fontWeight: 600, borderBottom: "1px solid var(--border-strong)" }}>
+        <a href="https://giwa.io/gasok" target="_blank" rel="noreferrer" style={{ fontWeight: 600, borderBottom: "1px solid var(--border-strong)" }}>
           {t.footer.programName}
         </a>
       </div>
