@@ -1,52 +1,73 @@
-# Jjan (짠) — trustless on-chain _kye_ (곗돈) for GIWA
+# Jjan (짠) — Trustless On-Chain Savings Circle (Kye)
 
-Korea's _kye_ — informal rotating savings clubs among friends and family — moves
-billions of won a year on nothing but trust and a KakaoTalk group. Organizers run
-off with the pot constantly. **Jjan removes the trust.** A smart contract escrows
-every member's contribution and pays the rotating recipient each round. No
-organizer, and no admin key, can ever drain the pot.
+![Jjan Landing Page](web/public/landing_screenshot.png)
 
-Built on **GIWA** (Upbit/Dunamu's Ethereum L2) because a club of many small,
-recurring payments only feels good on a fast, near-free chain.
+Korea's _kye_ (곗돈) — informal rotating savings clubs among friends and family — moves billions of won a year on nothing but social trust. However, organizers frequently run off with the pooled funds. 
 
-## Contracts
+**Jjan removes the trust.** A non-custodial smart contract escrows every member's contribution and pays the rotating recipient automatically each round. There is no admin key, owner role, or code path that can divert the pot, making the traditional "kye-rug" mathematically impossible.
 
-| Contract | Purpose |
+Built on **GIWA** (Upbit/Dunamu's OP Stack L2) because a club of many small, recurring payments is only viable on a fast, near-free chain.
+
+---
+
+## 🚀 Live Resources
+
+* **🎥 YouTube Demo Video:** https://youtu.be/Ifl9NLPp6L8
+* **📖 GitBook Product Documentation:** https://ritesh5969.gitbook.io/jjan-docs/
+* **⚡ Live MVP Application:** `[Paste your Vercel URL here]`
+
+---
+
+## 🛠️ Deployed Contracts (GIWA Sepolia testnet)
+
+All contracts are verified on the block explorer:
+
+| Contract | Address |
 |---|---|
-| `Circle.sol` | Rotating-escrow state machine: join → contribute → closeRound (pays fixed recipient, slashes no-shows) → withdrawBond. Clone-initialized. |
-| `CircleFactory.sol` | Deploys EIP-1167 clones of `Circle` cheaply; authorizes each to write reputation. |
-| `ReputationRegistry.sol` | Global per-wallet reliability score; only factory-authorized circles can write. |
-| `mocks/MockKRW.sol` | Testnet-only KRW stablecoin with an open faucet. Replace with a real stable on mainnet. |
+| **CircleFactory** | [`0x7f01efFDbEe10d31f300E2b3Fed000C061940551`](https://sepolia-explorer.giwa.io/address/0x7f01efFDbEe10d31f300E2b3Fed000C061940551) |
+| **ReputationRegistry** | [`0x0cd53f090471d4aD3f14bEFaC1F60D7F3F076204`](https://sepolia-explorer.giwa.io/address/0x0cd53f090471d4aD3f14bEFaC1F60D7F3F076204) |
+| **MockKRW (mKRW)** | [`0x6F82D1b448C3e742e2Da3455611c268C6D72f53B`](https://sepolia-explorer.giwa.io/address/0x6F82D1b448C3e742e2Da3455611c268C6D72f53B) |
+| **Circle (Logic implementation)** | [`0xf2b12af647ecf2341960e901e4ee8ba55639377b`](https://sepolia-explorer.giwa.io/address/0xf2b12af647ecf2341960e901e4ee8ba55639377b) |
 
-### Security properties (all test-backed)
-- **No custodial drain:** funds leave only via `closeRound` (to the round's fixed recipient) or `withdrawBond` (to the member). There is no admin transfer path.
-- **Solvency invariant:** `balance >= liveBonds + unpaidEscrow` holds across 128k randomized calls (`invariant_Solvency`).
-- **Reentrancy:** `nonReentrant` + checks-effects-interactions on every fund-moving function; pull-payment for bonds.
-- **No manipulation:** payout order and recipient are fixed at creation; duplicate/zero members rejected.
+---
 
-## Develop
+## 🔒 Security Properties (Foundry Tested)
 
+- **No Custodial Drain:** Funds leave the contract only via `closeRound` (to the round's fixed recipient) or `withdrawBond` (to the member). There is no owner/admin transfer path.
+- **Solvency Invariant:** `balanceOf(circle) >= obligations()` (i.e. `totalBonds + escrowedPot`) is strictly maintained across 128,000 randomized state-machine call sequences via Foundry handler-driven invariant tests.
+- **Reentrancy Prevention:** Every fund-moving function uses `nonReentrant` modifiers and follows the checks-effects-interactions pattern with pull-payments for bond withdrawals.
+- **Input Hardening:** Initialize checks reject duplicate member addresses, zero addresses, and configurations with fewer than 2 participants.
+
+---
+
+## 💻 Development & Testing
+
+Built with Foundry and Next.js.
+
+### Smart Contracts:
 ```bash
+# Build contracts
 forge build
-forge test -vvv          # 9 tests: unit + fuzz + solvency invariant
+
+# Run unit, fuzz, and invariant tests
+forge test -vvv          # 9 tests pass green
+
+# Code formatting
 forge fmt
 ```
 
-## Deploy to GIWA testnet
+### Web Frontend:
+```bash
+cd web
+npm install
+npm run dev   # launches local dev server at http://localhost:3005
+```
 
-1. Fill `.env` from `.env.example` (**verify GIWA RPC / explorer values against official docs**).
-2. Deploy the stack:
-   ```bash
-   forge script script/Deploy.s.sol --rpc-url giwa_testnet --broadcast --verify
-   ```
-3. (Demo) create a live circle with short rounds:
-   ```bash
-   FACTORY=0x.. MKRW=0x.. M1=0x.. M2=0x.. M3=0x.. \
-   forge script script/DemoCircle.s.sol --rpc-url giwa_testnet --broadcast
-   ```
+---
 
-## Status
+## 🏆 GASOK Submission Details
 
-Contracts + tests complete and green. Next: frontend (Next.js + wagmi/viem +
-embedded/social login), then deploy + verify on GIWA testnet for the GASOK
-submission (due 2026-07-31).
+* **Project:** Jjan (짠)
+* **Accelerator:** GASOK (GIWA × Upbit) MVP Build Phase
+* **Tracks:** Consumer/Social · Mass Adoption · GIWA-Native
+* **Developer:** Ritesh ([@Ritesh5969](https://x.com/Ritesh5969))
