@@ -13,3 +13,13 @@ web/node_modules/
 submission/node_modules/
 web/tsconfig.tsbuildinfo
 .env.demo
+
+# Claude
+.claude/
+CLAUDE.md
+
+# Team
+team_introduction.md
+
+# Large media files (exceeding GitHub limit)
+web/public/lv_0_*.mp4

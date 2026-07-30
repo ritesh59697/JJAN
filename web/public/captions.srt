@@ -1,0 +1,191 @@
+1
+00:00:00,500 --> 00:00:05,500
+Jjan (짠) — Korea's kye savings circle,
+rebuilt on-chain.
+
+2
+00:00:06,000 --> 00:00:11,000
+In a traditional kye, one person holds the pot.
+Organizers run off with it.
+
+3
+00:00:11,500 --> 00:00:15,000
+Here the contract holds it instead.
+Zero admin drain paths.
+
+4
+00:00:15,500 --> 00:00:19,000
+Connecting a wallet on GIWA Sepolia —
+Upbit's OP Stack L2.
+
+5
+00:00:19,500 --> 00:00:24,000
+The dashboard. Everything here is mock KRW
+on testnet, not real funds.
+
+6
+00:00:24,500 --> 00:00:30,000
+The built-in faucet mints 1,000,000 test
+mKRW in a single click.
+
+7
+00:00:30,500 --> 00:00:36,500
+Creating a circle: name it, then list the
+member wallets in payout order.
+
+8
+00:00:37,000 --> 00:00:43,000
+Two wallets this run, M1 and M2.
+The payout order is fixed right here.
+
+9
+00:00:43,500 --> 00:00:49,000
+100,000 mKRW per round, a 50,000 bond,
+and a deliberately short round window.
+
+10
+00:00:49,500 --> 00:00:55,500
+One transaction: the factory clones
+a brand-new Circle contract.
+
+11
+00:00:56,000 --> 00:01:00,000
+Created. Every circle is an EIP-1167 clone,
+so deploying one costs almost nothing.
+
+12
+00:01:00,500 --> 00:01:05,500
+The circle: 200,000 mKRW pot per round,
+two rounds, nobody joined yet.
+
+13
+00:01:06,000 --> 00:01:12,000
+M1 approves mKRW once — enough for the bond
+and every round after it.
+
+14
+00:01:12,500 --> 00:01:19,000
+Then joins by posting the 50,000 bond.
+Collateral, slashed if you skip a round.
+
+15
+00:01:19,500 --> 00:01:25,000
+M1 is in — one of two joined.
+
+16
+00:01:25,500 --> 00:01:31,000
+Switching Rabby over to the second wallet, M2.
+
+17
+00:01:31,500 --> 00:01:37,500
+M2 approves the same one-time allowance.
+
+18
+00:01:38,000 --> 00:01:44,000
+And joins, posting its own 50,000 bond.
+
+19
+00:01:44,500 --> 00:01:51,000
+Both bonds are now posted, and the contract
+is the only thing holding them.
+
+20
+00:01:51,500 --> 00:01:57,000
+Two of two joined, so the circle can start.
+
+21
+00:01:57,500 --> 00:02:03,000
+Round 1 is live. The countdown is the round
+window — nothing can close early.
+
+22
+00:02:03,500 --> 00:02:10,000
+Each member contributes 100,000 mKRW.
+It lands in escrow, not in anyone's wallet.
+
+23
+00:02:10,500 --> 00:02:17,000
+Switching wallets to pay in from
+the other side too.
+
+24
+00:02:17,500 --> 00:02:24,000
+Both contributions in. A 200,000 mKRW pot,
+held by the contract alone.
+
+25
+00:02:24,500 --> 00:02:30,000
+Timer at zero. Every step is on GIWA's
+Blockscout explorer as we go.
+
+26
+00:02:30,500 --> 00:02:36,000
+Now closeRound can be called — by anyone,
+not just whoever created the circle.
+
+27
+00:02:36,500 --> 00:02:43,000
+closeRound succeeded. 200,000 mKRW paid
+straight to round 1's scheduled member.
+
+28
+00:02:43,500 --> 00:02:49,000
+Confirmed in under a second on GIWA.
+No one chose the recipient — the schedule did.
+
+29
+00:02:49,500 --> 00:02:56,000
+Round 2 of 2. The pot rotates to M2.
+
+30
+00:02:56,500 --> 00:03:03,000
+Same flow again: both members
+pay in their 100,000.
+
+31
+00:03:03,500 --> 00:03:10,000
+The payout can't be redirected. It reads the
+recipient fixed at creation, from storage.
+
+32
+00:03:10,500 --> 00:03:17,000
+Round 2 fully funded, window expired.
+
+33
+00:03:17,500 --> 00:03:23,000
+Closing the final round —
+200,000 mKRW to M2 this time.
+
+34
+00:03:23,500 --> 00:03:29,000
+Circle finished. Each member took
+exactly one pot, in the agreed order.
+
+35
+00:03:29,500 --> 00:03:36,000
+Now the bonds come back. Each member pulls
+their own — the contract can't push it anywhere.
+
+36
+00:03:36,500 --> 00:03:43,000
+M1's 50,000 bond claimed.
+
+37
+00:03:43,500 --> 00:03:50,000
+M2 withdraws too. The circle is settled and
+empty — every mKRW accounted for.
+
+38
+00:03:50,500 --> 00:03:57,000
+Every contribution, payout and withdrawal
+is a verified event on the GIWA explorer.
+
+39
+00:03:57,500 --> 00:04:02,500
+The docs cover the architecture, the security
+model, and the deployed contracts.
+
+40
+00:04:03,000 --> 00:04:07,700
+Fully bilingual, English and Korean.
+Jjan — save with friends, trust no one.
