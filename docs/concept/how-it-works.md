@@ -17,23 +17,26 @@ payout order. One transaction spins up a new circle.
 {% step %}
 ### Join
 
-Each invited member opens a share link and joins in two taps, posting their bond.
-With social login there is no seed phrase to manage — the onboarding feels like a
-Web2 app.
+Each invited member opens the circle from the dashboard, connects a browser wallet
+(MetaMask or Rabby), approves the token once, and joins by posting their bond.
+Social-login onboarding, with no seed phrase to manage, is on the
+[roadmap](../roadmap.md).
 {% endstep %}
 
 {% step %}
 ### Contribute
 
 Every round, each member pays the fixed amount into the contract's escrow. Miss a
-round and part of your bond is slashed into the pot.
+round and your bond covers your share: up to one contribution is slashed from your
+bond into the pot.
 {% endstep %}
 
 {% step %}
 ### Rotate
 
-Once the round window elapses, the contract pays that round's scheduled recipient
-automatically — in about a second on GIWA — and advances to the next round.
+Once the round window elapses, anyone can close the round. The contract then pays
+that round's scheduled recipient — in about a second on GIWA — and advances to the
+next round. Nobody chooses the recipient at payout time.
 {% endstep %}
 {% endstepper %}
 
@@ -52,7 +55,9 @@ automatically — in about a second on GIWA — and advances to the next round.
 
 The design goal is that a first-time user experiences Jjan like any consumer
 savings app — a link, a tap, a clear schedule — while the guarantees underneath are
-those of a public, verifiable smart contract.
+those of a public, verifiable smart contract. Today's testnet MVP gets part of the
+way there: it needs a browser wallet, and joining takes two transactions. One-step
+joining and social login are next on the [roadmap](../roadmap.md).
 
 For exactly how this is enforced in code, see the
 [Architecture](../technical/architecture.md) and

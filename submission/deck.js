@@ -128,13 +128,13 @@ function dot(slide, x, y, color) {
 (() => {
   const s = p.addSlide(); base(s);
   kicker(s, "How it works");
-  title(s, "Four taps from group chat to trustless savings");
+  title(s, "Four steps from group chat to trustless savings");
 
   const steps = [
     ["Create", "Set members, amount per round, and the payout order. One transaction spins up a circle."],
-    ["Join", "Members open a share link and join in two taps. Social login — no seed phrase needed."],
+    ["Join", "Members connect a browser wallet, approve once, and join by posting a bond. Social login is next."],
     ["Contribute", "Each round, everyone pays the fixed amount into escrow. Miss it and your bond is slashed."],
-    ["Rotate", "The contract pays the round's recipient automatically — in about a second on GIWA."],
+    ["Rotate", "When the timer ends, anyone closes the round and the contract pays the scheduled member — in about a second on GIWA."],
   ];
   steps.forEach(([h, d], i) => {
     const x = 0.7 + i * 3.05;
@@ -145,7 +145,7 @@ function dot(slide, x, y, color) {
     if (i < 3) s.addText("→", { x: x + 2.72, y: 3.55, w: 0.4, h: 0.5, fontFace: H, fontSize: 24, bold: true, color: LINE, align: "center", margin: 0 });
   });
   s.addText("Web2-easy on the surface. On-chain-trustless underneath.", { x: 0.7, y: 6.25, w: 12, h: 0.5, fontFace: B, fontSize: 16, italic: true, color: GOLD, margin: 0 });
-  s.addNotes("Emphasise the UX: a whole friend group is onboarded from one share link.");
+  s.addNotes("Emphasise the UX: one organizer brings the whole friend group. Be clear that social login and one-step joining are roadmap, not live.");
 })();
 
 /* ---------------- Slide 5 — Live proof ---------------- */
@@ -196,7 +196,7 @@ function dot(slide, x, y, color) {
   const cards = [
     ["Payout feels instant", "~1s blocks, ~200ms Flashblocks preconfirmations. The pot lands the moment a round closes — the magic moment of the demo.", CORAL],
     ["Micro-payments make sense", "Near-zero gas means dozens of tiny recurring transfers per circle don't get eaten by fees — impossible on L1.", GOLD],
-    ["Upbit-scale distribution", "Millions of Korea-native users, a familiar wallet, and a direct funding path into circles from an Upbit balance.", GREEN],
+    ["Upbit-scale opportunity", "GIWA sits next to Upbit's Korea-native users. The goal: fund circles straight from an Upbit balance.", GREEN],
   ];
   cards.forEach(([h, d, c], i) => {
     const x = 0.7 + i * 4.05;
@@ -205,7 +205,7 @@ function dot(slide, x, y, color) {
     s.addText(h, { x: x + 0.3, y: 2.95, w: 3.25, h: 0.9, fontFace: H, fontSize: 19, bold: true, color: TEXT, margin: 0, lineSpacingMultiple: 0.95 });
     s.addText(d, { x: x + 0.3, y: 3.95, w: 3.25, h: 2.0, fontFace: B, fontSize: 13.5, color: MUTED, margin: 0, lineSpacingMultiple: 1.15 });
   });
-  s.addNotes("GIWA fit is not cosmetic: the product is unusable on a slow or expensive chain, and Upbit is the distribution unlock.");
+  s.addNotes("GIWA fit is not cosmetic: the product is unusable on a slow or expensive chain, and Upbit is the distribution opportunity (an Upbit-balance funding path is not built yet).");
 })();
 
 /* ---------------- Slide 7 — Traction / metrics ---------------- */
@@ -322,10 +322,10 @@ function dot(slide, x, y, color) {
   s.addText("Ritesh", { x: 8.65, y: 3.8, w: 3.6, h: 0.55, fontFace: H, fontSize: 26, bold: true, color: TEXT, margin: 0 });
   s.addText("Solo builder — contracts, frontend & deployment.", { x: 8.65, y: 4.4, w: 3.7, h: 0.7, fontFace: B, fontSize: 13, color: MUTED, margin: 0, lineSpacingMultiple: 1.1 });
   s.addText([{ text: "@Ritesh5969", options: { color: TEXT, bold: true } }], { x: 8.65, y: 5.25, w: 3.6, h: 0.35, fontFace: B, fontSize: 14, margin: 0 });
-  s.addText("Contact:  add email before submitting", { x: 8.65, y: 5.65, w: 3.7, h: 0.4, fontFace: B, fontSize: 11.5, italic: true, color: MUTED, margin: 0 });
+  s.addText("Contact: riteshwork5969@gmail.com", { x: 8.65, y: 5.65, w: 3.7, h: 0.4, fontFace: B, fontSize: 11.5, italic: true, color: MUTED, margin: 0 });
 
   s.addText("Live on GIWA Sepolia  ·  sepolia-explorer.giwa.io", { x: 0.7, y: 6.85, w: 11, h: 0.4, fontFace: B, fontSize: 13, color: GREEN, margin: 0 });
-  s.addNotes("Close on the ask. Replace the contact line with your real email before submitting.");
+  s.addNotes("Close on the ask.");
 })();
 
 p.writeFile({ fileName: "Jjan-Pitch-Deck.pptx" }).then((f) => console.log("wrote", f));
